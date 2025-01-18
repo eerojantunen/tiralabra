@@ -7,7 +7,6 @@ Ydin: Lauta joka on toteutettu bitboard muodossa. Heurestiikkafunktio joka perus
 Sovellus toteutetaan pythonilla. En kunnolla hallitse muita ohjelmointikieliä. 
 
 lähteet:
-
-https://en.wikipedia.org/wiki/Bitboard
-https://en.wikipedia.org/wiki/Minimax
-https://en.wikipedia.org/wiki/Alpha-beta_pruning
+https://en.wikipedia.org/wiki/Bitboard 
+https://en.wikipedia.org/wiki/Minimax 
+https://en.wikipedia.org/wiki/Alpha-beta_pruning 
