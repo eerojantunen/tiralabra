@@ -1,0 +1,2 @@
+Olen tällä viikolla jatkanut "vision boardien" toteuttamista. Ongelmaksi on koitunut aikataulu ongelmat jonka vuoksi projekti on edennyt vain vähän. Olen oppinut mitä vaaditaan palojen siirtojen toteuttamiseen. Pyrin ensi viikolla testaamaan kaikki siirrot ja aloittamaan heurestiikkafunktion/minimax algoritmin toteutuksen
+Käytetty aika ~ 2h

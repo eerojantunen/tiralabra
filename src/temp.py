@@ -1,5 +1,6 @@
 import numpy as np
 from piece_data import piece_representation, get_square_location_from_coordinates
+from vision_boards import knight_vision_bitboard, north_ray_empty, south_ray_empty, west_ray_empty, east_ray_empty
 class Board():
     def __init__(self):
         self.white_rooks = np.uint64(0)
@@ -88,7 +89,17 @@ class Board():
         board = board[::-1,:]   
         print(board, "\n")
 
-        
+    def square_vision_board(self, vision_board, piece:str, square_index:int):
+        """ print a given vision board """
+        board = [0]*64
+        x = self.index_from_bitboard(vision_board)
+        board[square_index] = piece_representation[piece]
+        for i in x:
+            board[i] = "X"
+        board = np.reshape(board,(8,8))
+        board = board[::-1,:]   
+        print(board, "\n")
+
     def print_board_occupancy(self):
         """prints occupied squares"""
         print(bin(self.full_board))
@@ -122,19 +133,25 @@ class Board():
     
     #### temporary methods, to be moved
 
+    def get_knight_vision_bitboard(self,square_notation:str):
+        """ temp """
+        return knight_vision_bitboard(self, square_notation)
 
+    def get_nort_ray_empty(self,square_notation:str):
+        return north_ray_empty(self,square_notation)
 
-    def knight_vision_bitboard(self,square_location:str):
-        square_location = get_square_location_from_coordinates(square_location)
-        row, col = self.row_col_from_square_location(square_location)
-        vision_board = np.uint64(0)
-        if col < 7:
-            vision_board = np.uint64(vision_board | 1 << square_location + 17)
-            vision_board = np.uint64(vision_board | 1 << square_location - 15)
-        
+    def get_south_ray_empty(self,square_notation:str):
+        return south_ray_empty(self,square_notation)
 
-    def row_col_from_square_location(self,square_location_as_index):
-        square_location = get_square_location_from_coordinates(square_location_as_index)
+    def get_west_ray_empty(self,square_notation:str):
+        return west_ray_empty(self,square_notation)
+
+    def get_east_ray_empty(self,square_notation:str):
+        return east_ray_empty(self,square_notation)
+
+    def row_col_from_square_notation(self,square_location_as_notation):
+        """ returns board row and column from algeabric notation (0-7)"""
+        square_location = get_square_location_from_coordinates(square_location_as_notation)
         row = square_location // 8
         col = square_location-((square_location // 8) * 8)
         return row, col
@@ -144,9 +161,16 @@ C = Board()
 C.create_board()
 C.final_print_board()
 C.add_material("WNd6")
-C.knight_vision_bitboard("d6")
-C.final_print_board()
-
+a,b,c = C.get_knight_vision_bitboard("a6")
+C.square_vision_board(a,b,c)
+a,b,c = C.get_nort_ray_empty("h8")
+C.square_vision_board(a,b,c)
+a,b,c = C.get_south_ray_empty("h8")
+C.square_vision_board(a,b,c)
+a,b,c = C.get_west_ray_empty("c4")
+C.square_vision_board(a,b,c)
+a,b,c = C.get_east_ray_empty("a8")
+C.square_vision_board(a,b,c)
 """
 C.final_print_board()
 
