@@ -1,6 +1,6 @@
 import numpy as np
 from piece_data import piece_representation, get_square_location_from_coordinates
-from vision_boards import knight_vision_bitboard, north_ray_empty, south_ray_empty, west_ray_empty, east_ray_empty
+from vision_boards import legal_moves_of_piece, occupied_bitboard, knight_vision_bitboard, north_ray_empty, south_ray_empty, west_ray_empty, east_ray_empty, south_west_ray_empty,south_east_ray_empty, north_west_ray_empty, north_east_ray_empty
 class Board():
     def __init__(self):
         self.white_rooks = np.uint64(0)
@@ -28,6 +28,19 @@ class Board():
                 self.black_knights, self.black_king, self.black_pawns, self.black_queens]
 
     @property
+    def white_bitboards(self):
+        """ returns list of all white piece bitboards """
+        return [self.white_rooks, self.white_bishops, self.white_knights, self.white_queens,
+                self.white_king, self.white_pawns]
+    
+    @property
+    def black_bitboards(self):
+        """ returns list of all black piece bitboards """
+        return [self.black_rooks, self.black_bishops,self.black_knights, self.black_king,
+                self.black_pawns, self.black_queens]
+
+
+    @property
     def bitboard_dict(self):
         return {"W":self.white_pawns, "WR":self.white_rooks, "WN":self.white_knights, "WB":self.white_bishops,
                 "WQ":self.white_queens, "WK":self.white_king, "B":self.black_pawns, "BR":self.black_rooks,
@@ -41,7 +54,6 @@ class Board():
         for board in self.all_bitboards:
             full_board = np.uint64(full_board | board)
         self.full_board = full_board
-        print(bin(self.full_board))
 
     def setup_standard_board(self):
         """ setup initial bitboard positions for pieces """
@@ -89,7 +101,7 @@ class Board():
         board = board[::-1,:]   
         print(board, "\n")
 
-    def square_vision_board(self, vision_board, piece:str, square_index:int):
+    def print_square_vision_board(self, vision_board, piece:str, square_index:int):
         """ print a given vision board """
         board = [0]*64
         x = self.index_from_bitboard(vision_board)
@@ -126,9 +138,6 @@ class Board():
         new_value = np.uint64(current_value | 1 << square_location)
         setattr(self, correct_bitboard, new_value)
 
-        #temptest
-        #new_value |= np.uint64(current_value | 1 << square_location-7)
-        #setattr(self, correct_bitboard, new_value)
 
     
     #### temporary methods, to be moved
@@ -137,7 +146,7 @@ class Board():
         """ temp """
         return knight_vision_bitboard(self, square_notation)
 
-    def get_nort_ray_empty(self,square_notation:str):
+    def get_north_ray_empty(self,square_notation:str):
         return north_ray_empty(self,square_notation)
 
     def get_south_ray_empty(self,square_notation:str):
@@ -148,6 +157,22 @@ class Board():
 
     def get_east_ray_empty(self,square_notation:str):
         return east_ray_empty(self,square_notation)
+    
+    def get_south_west_ray_empty(self, square_notation:str):
+        return south_west_ray_empty(self, square_notation)
+    
+    def get_south_east_ray_empty(self,square_notation:str):
+        return south_east_ray_empty(self, square_notation)
+
+    def get_north_west_ray_empty(self, square_notation:str):
+        return north_west_ray_empty(self, square_notation)
+    
+    def get_north_east_ray_empty(self,square_notation:str):
+        return north_east_ray_empty(self, square_notation)
+
+    def get_legal_moves_of_piece(self,vision_board,color:str):
+        return legal_moves_of_piece(self, vision_board,color)
+
 
     def row_col_from_square_notation(self,square_location_as_notation):
         """ returns board row and column from algeabric notation (0-7)"""
@@ -156,30 +181,3 @@ class Board():
         col = square_location-((square_location // 8) * 8)
         return row, col
 
-
-C = Board()
-C.create_board()
-C.final_print_board()
-C.add_material("WNd6")
-a,b,c = C.get_knight_vision_bitboard("a6")
-C.square_vision_board(a,b,c)
-a,b,c = C.get_nort_ray_empty("h8")
-C.square_vision_board(a,b,c)
-a,b,c = C.get_south_ray_empty("h8")
-C.square_vision_board(a,b,c)
-a,b,c = C.get_west_ray_empty("c4")
-C.square_vision_board(a,b,c)
-a,b,c = C.get_east_ray_empty("a8")
-C.square_vision_board(a,b,c)
-"""
-C.final_print_board()
-
-#C.add_material("Wh3")
-
-while True:
-    x = input("input lolz: ")
-    C.add_material(x)
-    C.final_print_board()
-
-C.final_print_board()
-"""
