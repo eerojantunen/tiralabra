@@ -1,6 +1,11 @@
 import numpy as np
 from piece_data import piece_representation, get_square_location_from_coordinates
-from vision_boards import legal_moves_of_piece, occupied_bitboard, knight_vision_bitboard, north_ray_empty, south_ray_empty, west_ray_empty, east_ray_empty, south_west_ray_empty,south_east_ray_empty, north_west_ray_empty, north_east_ray_empty
+from vision_boards import get_legal_white_pawn_moves, get_enemy_pieces, get_friendly_pieces, get_legal_moves_knight, get_legal_moves_queen, get_legal_moves_rook, bishop_vision_board_empty, legal_moves_of_piece, occupied_bitboard, knight_vision_bitboard, get_blocked_rays_bishop, get_legal_moves_bishop
+from Pieces import queen_vision_board_empty
+from annotation_data import alg_notation_to_index, index_to_alg_notation
+from vision_rays import north_ray_empty, south_ray_empty, west_ray_empty, east_ray_empty, south_west_ray_empty,south_east_ray_empty, north_west_ray_empty, north_east_ray_empty
+import time
+
 class Board():
     def __init__(self):
         self.white_rooks = np.uint64(0)
@@ -19,6 +24,7 @@ class Board():
 
         self.full_board = np.uint64(0)
         self.piece_board = {}                      
+
 
     @property
     def all_bitboards(self):
@@ -101,13 +107,22 @@ class Board():
         board = board[::-1,:]   
         print(board, "\n")
 
-    def print_square_vision_board(self, vision_board, piece:str, square_index:int):
-        """ print a given vision board """
-        board = [0]*64
+    def print_square_vision_board(self, vision_board, piece:str, square_index:int, color="x"):
+        """ print a given vision board ---- debugging tool
+         🟥-enemy,   🟩-friendly 🟪-self"""
+        board = ["⚪"]*64
         x = self.index_from_bitboard(vision_board)
-        board[square_index] = piece_representation[piece]
+        if color != "x":
+            y = self.index_from_bitboard(occupied_bitboard(get_enemy_pieces(self, color))) #:)
+            for i in y:
+                board[i] = "🟥"
+        board[square_index] = "🟪"#piece_representation[piece] optional
         for i in x:
-            board[i] = "X"
+            board[i] = "❌"
+        if color != "x":
+            y = self.index_from_bitboard(occupied_bitboard(get_friendly_pieces(self, color))) #:)
+            for i in y:
+                board[i] = "🟩"
         board = np.reshape(board,(8,8))
         board = board[::-1,:]   
         print(board, "\n")
@@ -173,6 +188,14 @@ class Board():
     def get_legal_moves_of_piece(self,vision_board,color:str):
         return legal_moves_of_piece(self, vision_board,color)
 
+    def get_bishop_vision_board_empty(self,square_notation):
+        return bishop_vision_board_empty(self,square_notation)
+
+    def get_queen_vision_board_empty(self,square_notation):
+        return queen_vision_board_empty(self,square_notation)
+
+    def blocked_rays_bishop(self,square_notation):
+        return get_blocked_rays_bishop(self,square_notation)
 
     def row_col_from_square_notation(self,square_location_as_notation):
         """ returns board row and column from algeabric notation (0-7)"""
@@ -181,3 +204,47 @@ class Board():
         col = square_location-((square_location // 8) * 8)
         return row, col
 
+    def legal_moves_bishop(self,color,square_notation):
+        return get_legal_moves_bishop(self, color, square_notation)
+
+    def legal_moves_rook(self, color, square_notation):
+        return get_legal_moves_rook(self, color, square_notation)
+
+    def legal_moves_queen(self,color,square_notation):
+        return get_legal_moves_queen(self,color,square_notation)
+
+    def legal_moves_knight(self, color, square_notation):
+        return get_legal_moves_knight(self, color, square_notation)
+
+    def legal_white_pawn_moves(self,color,square_notation): #remove color parameter
+        return get_legal_white_pawn_moves(self,color,square_notation)
+
+C = Board()
+C.create_board()
+C.add_material("Bb2")
+C.add_material("Ba5")
+C.add_material("Bc4")
+C.add_material("Bh7")
+C.add_material("Bd7")
+C.add_material("Bc5")
+C.add_material("Bd5")
+C.add_material("Bh6")
+
+C.add_material("Bd8")
+
+C.add_material("Wh4")
+
+
+
+#z = alg_notation_to_index["d3"]
+#x = C.get_rook_vision_board_empty("f5")
+#C.print_square_vision_board(x,"BR", z)
+C.final_print_board()
+alku = time.time()
+#y = C.legal_moves_queen("B","f5")
+loppu = time.time()
+print(loppu-alku)
+z = C.legal_white_pawn_moves("W","d8")
+d = C.print_board_occupancy
+#z = C.legal_moves_rook("W","b3")
+C.print_square_vision_board(z,"W",alg_notation_to_index["d8"],"W")

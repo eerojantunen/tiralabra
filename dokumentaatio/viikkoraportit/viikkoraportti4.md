@@ -1,0 +1,2 @@
+Olen tällä viikolla kaikkien siirtojen tekemisen ja aloittanut heurastiikkafunktion suunnittelun. Projekti on edennyt tällä viikolla kohtalaisesti. Vaikka projekti on edennyt hieman hitaasti, uskon, että saan projektin valmiiksi määräaikaan mennessä. Pyrin ensi viikolla parantamaan käyttöliittymää ja toteuttamaan ensimmäisen "toimivan" version. Tämä vaatii toimivaa minimax algoritmia, sekä heurestiikkafunktiota.
+Käytetty aika ~ 6h
