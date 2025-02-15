@@ -90,25 +90,53 @@ def king_vision_board_empty(self,square_notation):
             king_vision_board_empty = np.uint64(king_vision_board_empty | 1 << np.uint64(square_index + move))
     return king_vision_board_empty
 
+def black_pawn_vision_board_empty(self,square_notation): # EI TOIMI TEE SAMA KU WHITE PAWN FIX ASAP
+    square_index = alg_notation_to_index[square_notation]
+    pawn_moves = [-8]
+    pawn_vision_board_empty = np.uint64(0)
+    if int(square_notation[1]) == 1:
+        #todo promote queen
+        return np.uint64(0) #placeholder 
+    if int(square_notation[1]) == 7: # tarkasta onko oikei :)1
+        pawn_moves.append(-16)   # voi theä vamrmaa nopeemmi
+    for move in pawn_moves:
+        pawn_vision_board_empty = np.uint64(pawn_vision_board_empty | 1 << np.uint64(square_index+move))
+    return pawn_vision_board_empty
+
+def black_pawn_attack(self, square_notation):
+    square_index = alg_notation_to_index[square_notation]
+    pawn_attack_board_empty = np.uint64(0)
+    if int(square_notation[1]) > 1:
+        if square_notation[0] != "h":
+            pawn_attack_board_empty = np.uint64(pawn_attack_board_empty | 1 << np.uint64(square_index-7))
+        if square_notation[0] != "a":
+            pawn_attack_board_empty = np.uint64(pawn_attack_board_empty | 1 << np.uint64(square_index-9))
+        return pawn_attack_board_empty
+    return np.uint64(0)
+
 def white_pawn_vision_board_empty(self,square_notation):
     #TARKISTA
     square_index = alg_notation_to_index[square_notation]
     pawn_moves = [8]
     pawn_vision_board_empty = np.uint64(0)
+    two_move_vision_ray = np.uint64(0)
     if int(square_notation[1]) == 8:
         #todo promote queen
         return np.uint64(0) #placeholder 
-    if int(square_notation[1]) == 2: # tarkasta onko oikei :)1
-        pawn_moves.append(16)   # voi theä vamrmaa nopeemmi
+    if int(square_notation[1]) == 2: # tarkasta onko oikei :)
+        two_move_vision_ray = np.uint64(pawn_vision_board_empty | 1 << np.uint64(square_index+16))
     for move in pawn_moves:
         pawn_vision_board_empty = np.uint64(pawn_vision_board_empty | 1 << np.uint64(square_index+move))
-    return pawn_vision_board_empty
+    return pawn_vision_board_empty, two_move_vision_ray
+
 
 def white_pawn_attack(self,square_notation):
     square_index = alg_notation_to_index[square_notation]
     pawn_attack_board_empty = np.uint64(0)
     if int(square_notation[1]) < 8:
-        pawn_attack_board_empty = np.uint64(pawn_attack_board_empty | 1 << np.uint64(square_index+7))
-        pawn_attack_board_empty = np.uint64(pawn_attack_board_empty | 1 << np.uint64(square_index+9))
+        if square_notation[0] != "a":
+            pawn_attack_board_empty = np.uint64(pawn_attack_board_empty | 1 << np.uint64(square_index+7))
+        if square_notation[0] != "h":
+            pawn_attack_board_empty = np.uint64(pawn_attack_board_empty | 1 << np.uint64(square_index+9))
         return pawn_attack_board_empty
     return np.uint64(0)
