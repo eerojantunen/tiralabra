@@ -1,1 +1,3 @@
 Olen tällä viikolla korjannut (lähes) kaikkien palasten siirtämisen, ja saanut ensimmäisen toimivan version kasaan. Ohjelma on edistynyt melko hyvin, vaikka kirittävää vielä on. Minimax algoritmi ei kuitenkaan vaikuta toimivan oikein juuri nyt. Ollut ongelmia virheellisten siirtojen kanssa jotka ilmeni minimax algoritmin toimimattomuudessa. Nämä ovat kuitenkin (suurilta osin) korjattu. Tällä hetkellä en ole varma mikä algoritmissa ei toimi, mutta uskon saavani sen toimimaan tahdotulla tavalla. Opin tänä viikolla Minimax ja alphabeta karsinnan soveltamisesta. Seuraavaksi aion toteuttaa vakavasti puuttuvan testauksen, sekä korjata minimax algoritmin toiminnan. Aion myös toteuttaa Game luokan joka sisältää kaiken peliin pelaamiseen tarvittavan.
+
+Käytetty aika ~14h
