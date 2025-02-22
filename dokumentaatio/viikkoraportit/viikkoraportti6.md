@@ -1,0 +1,1 @@
+Olen tällä viikolla edennyt vain vähän. Olen alottanut testaamista ja tutkinut algoritmin ongelmia. Olen aikalailla samassa tilanteessa kuin viikko sitten, joten viime viiken tavoitteiden lisäksi ensi viikon tavoitteisiin kuuluu ohjelman viimestely, että se on valmis lopullista palautusta varten.
