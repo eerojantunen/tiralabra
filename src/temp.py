@@ -165,7 +165,7 @@ class Board():
         current_value = getattr(self, correct_bitboard)
         new_value = np.uint64(current_value | 1 << square_location)
         setattr(self, correct_bitboard, new_value)
-
+        self.refresh_piece_board()
 
     
     #### temporary methods, to be moved
@@ -286,8 +286,7 @@ class Board():
         to_square = alg_notation_to_index[to_square]
         make_move(self,from_square,to_square,piece)
 
-C = Board()
-
+"""
 C.add_material("Wa2")
 C.add_material("Wb2")
 C.add_material("Wc4")
@@ -350,3 +349,4 @@ while True:
     to_square_notatoin = input("to square notation: ")
     piece = input("piece notatoin: ")
     C.make_move_board(alg_notation_to_index[from_square_notation],alg_notation_to_index[to_square_notatoin],piece)
+    """
