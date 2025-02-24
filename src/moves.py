@@ -82,6 +82,10 @@ def all_moves(self,only_color=None): #probably not working correctly fix lolz #n
     """ returns all possible moves, or all moves of wanted color
         returns as (from_square, to_square, piece)"""
     all_move_list = []
+    if only_color:
+        correct_king = str(only_color)+"K"
+        if len(self.piece_board[correct_king]) == 0:
+            return None
     for key, value in self.piece_board.items():
         if only_color is None or key[0] == only_color:
             if value:
