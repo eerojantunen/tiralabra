@@ -3,6 +3,18 @@ from vision_boards import *
 from piece_data import *
 from annotation_data import *
 
+def is_legal(self,from_square:int, to_square:int, piece):
+    if piece not in self.piece_board:
+        return False
+    if from_square not in self.piece_board[piece]:
+        return False
+    legal_move_function = piece_to_legal_moves_function(piece)
+    legal_move_bitboard = legal_move_function(self, piece[0], index_to_alg_notation[from_square])
+    if to_square not in self.index_from_bitboard(legal_move_bitboard): #can probably done more efficient
+        return False
+    #add pin-check checker
+    return True
+
 def update_full_board(self,from_square:int, to_square:int, piece):
     """ updates move to full_board """
     self.full_board &= ~(np.uint(1) << from_square)
@@ -11,7 +23,8 @@ def update_full_board(self,from_square:int, to_square:int, piece):
 
 def update_piece_board(self,from_square:int, to_square:int, piece):
     """ updates move to piece_board """
-
+    #if from_square == 60:
+        #print(from_square, to_square, piece)
     self.piece_board[piece].add(to_square)
     self.piece_board[piece].remove(from_square)
 
@@ -45,11 +58,13 @@ def identify_takes(self,to_square, piece): #verify that works lolz
     setattr(self, target_bitboard_name, taken_bitboard)
     
 
+
 def make_move(self,from_square:int, to_square:int, piece):
     """ FORCE UPDATES move according to from square and to square
         from_square - as index 0-63
         to_square - index 0-63
         """
+
     identify_takes(self,to_square, piece)
     update_bitboard_of_moving(self, from_square, to_square, piece)
     update_piece_board(self, from_square, to_square, piece)
@@ -63,7 +78,7 @@ def make_move_takes(self,from_square, to_square, piece, taken_piece):
     self.full_board &= ~(np.uint(1) << to_square)
     self.piece_board[piece].remove(to_square)
 
-def all_moves(self,only_color=None): #probably not working correctly fix lolz
+def all_moves(self,only_color=None): #probably not working correctly fix lolz #nvm
     """ returns all possible moves, or all moves of wanted color
         returns as (from_square, to_square, piece)"""
     all_move_list = []
@@ -77,5 +92,5 @@ def all_moves(self,only_color=None): #probably not working correctly fix lolz
                     legal_move_bitboard = legal_move_function(self, color, index_to_alg_notation[square])
                     all_index = all_index_from_bitboard(legal_move_bitboard)
                     for index in all_index:
-                        all_move_list.append((square, index, key)) 
+                        all_move_list.append((square, index, key))
     return all_move_list

@@ -311,7 +311,6 @@ C.add_material("WBd3")
 C.add_material("WQd1")
 C.add_material("WKg1")
 
-
 C.add_material("Ba7")
 C.add_material("Bb7")
 C.add_material("Bc7")
@@ -355,10 +354,24 @@ while True:
     print(x,y)    
     C.make_move_board(a[1][0][0],a[1][0][1],a[1][0][2])
     C.final_print_board()
-    print("HEP")
     C.eval()
-    print("HOP")
-    from_square_notation = input("from_square_notation: ")
-    to_square_notatoin = input("to square notation: ")
-    piece = input("piece notatoin: ")
-    C.make_move_board(alg_notation_to_index[from_square_notation],alg_notation_to_index[to_square_notatoin],piece)
+    while True:
+        from_square_notation = input("from_square_notation: ")
+        to_square_notation = input("to square notation: ")
+        piece = input("piece notation: ")
+        try:
+            if not is_legal(C, alg_notation_to_index[from_square_notation], alg_notation_to_index[to_square_notation],piece):
+                print("Not a legal move, try again")
+                continue
+            break
+        except:
+            print("Not a legal move, try again")
+            continue
+
+    if piece == "BQ":
+        print(C.piece_board)
+        print(alg_notation_to_index[from_square_notation])
+    if alg_notation_to_index[from_square_notation] == 42:
+        print(C.piece_board) 
+
+    C.make_move_board(alg_notation_to_index[from_square_notation],alg_notation_to_index[to_square_notation],piece)
