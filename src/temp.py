@@ -8,7 +8,7 @@ from evaluation import material_count
 import time
 from moves import *
 from engine import *
-from enginetesting2 import *
+
 from evaluation import *
 
 #TODO Remove essentially >50% of methods out of board class into appropriate file
@@ -269,12 +269,13 @@ class Board():
         all_moves(self, "B")
 
     def eval(self):
-        print(evaluate(self))
+        #print(evaluate(self))
+        return evaluate(self)
 
 
     def run_engine(self):
         legal_moves = all_moves(self,"W")
-        a = run_engine_local(self,legal_moves,5,True)
+        a = run_engine_local(self,legal_moves,3,True)
         return a
 
     def make_move_board(self, from_square, to_square, piece):
@@ -286,6 +287,8 @@ class Board():
         to_square = alg_notation_to_index[to_square]
         make_move(self,from_square,to_square,piece)
 
+
+C = Board()
 """
 C.add_material("Wa2")
 C.add_material("Wb2")
@@ -334,13 +337,23 @@ C.final_print_board()
 
 C.make_move_board_alg("g3","d6","WB")
 C.make_move_board_alg("c7","d6","B")   #walks into fork, engine not working properly fix
+C.final_print_board()
+"""
+C.setup_standard_board()
+C.final_print_board()
 while True:
+    print(C.eval())
     a = C.run_engine()
     print(a)
-    x = index_to_alg_notation[a[0]]
-    y = index_to_alg_notation[a[1]]
-    print(x,y)
-    C.make_move_board(a[0],a[1],a[2])
+
+    print(index_to_alg_notation[a[1][0][0]], index_to_alg_notation[a[1][0][1]])
+    print(index_to_alg_notation[a[1][1][0]], index_to_alg_notation[a[1][1][1]])
+    print(index_to_alg_notation[a[1][2][0]], index_to_alg_notation[a[1][2][1]])
+
+    x = index_to_alg_notation[a[1][0][0]]
+    y = index_to_alg_notation[a[1][0][1]]
+    print(x,y)    
+    C.make_move_board(a[1][0][0],a[1][0][1],a[1][0][2])
     C.final_print_board()
     print("HEP")
     C.eval()
@@ -349,4 +362,3 @@ while True:
     to_square_notatoin = input("to square notation: ")
     piece = input("piece notatoin: ")
     C.make_move_board(alg_notation_to_index[from_square_notation],alg_notation_to_index[to_square_notatoin],piece)
-    """
