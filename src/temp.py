@@ -7,8 +7,7 @@ from vision_rays import north_ray_empty, south_ray_empty, west_ray_empty, east_r
 from evaluation import material_count
 import time
 from moves import *
-#from engine import *
-from enginetesting2 import *
+from engine import *
 from evaluation import *
 
 #TODO Remove essentially >50% of methods out of board class into appropriate file
