@@ -7,12 +7,13 @@ from vision_rays import north_ray_empty, south_ray_empty, west_ray_empty, east_r
 from evaluation import material_count
 import time
 from moves import *
-from engine import *
-
+#from engine import *
+from enginetesting2 import *
 from evaluation import *
 
 #TODO Remove essentially >50% of methods out of board class into appropriate file
-
+#np -> pythonin oma
+#muuta self.white yms numero listaan
 class Board():
     def __init__(self):
         self.white_rooks = np.uint64(0)
@@ -239,44 +240,17 @@ class Board():
         board = board[::-1,:]   
         print(board, "\n")
 
-
-    """ temp debug functions """
-    def legal_moves_bishop(self,color,square_notation):
-        return get_legal_moves_bishop(self, color, square_notation)
-
-    def legal_moves_rook(self, color, square_notation):
-        return get_legal_moves_rook(self, color, square_notation)
-
-    def legal_moves_queen(self,color,square_notation):
-        return get_legal_moves_queen(self,color,square_notation)
-
-    def legal_moves_knight(self, color, square_notation):
-        return get_legal_moves_knight(self, color, square_notation)
-
-    def legal_white_pawn_moves(self,color,square_notation): #remove color parameter ?
-        return get_legal_white_pawn_moves(self,color,square_notation)
-
-    def legal_moves_king(self, color, square_notation):
-        return get_legal_moves_king(self, color, square_notation)
-
-    def legal_black_pawn_moves(self,color,square_notation):
-        return get_legal_black_pawn_moves(self,color,square_notation)
-    
-    def mat(self):
-        material_count(self)
-
-    def lolz(self):
-        all_moves(self, "B")
-
+    #turha
     def eval(self):
-        #print(evaluate(self))
         return evaluate(self)
 
 
     def run_engine(self):
         legal_moves = all_moves(self,"W")
-        a = run_engine_local(self,legal_moves,3,True)
-        return a
+        alku = time.time()
+        move_data = run_engine_local(self,legal_moves,4,True)
+        print(time.time()-alku)
+        return move_data
 
     def make_move_board(self, from_square, to_square, piece):
         """ as index from and to"""
@@ -287,91 +261,8 @@ class Board():
         to_square = alg_notation_to_index[to_square]
         make_move(self,from_square,to_square,piece)
 
-
-C = Board()
-"""
-C.add_material("Wa2")
-C.add_material("Wb2")
-C.add_material("Wc4")
-C.add_material("Wd4")
-C.add_material("We3")
-C.add_material("Wf2")
-C.add_material("Wg2")
-C.add_material("Wh2")
-
-C.add_material("WRa1")
-C.add_material("WRf1")
-
-C.add_material("WNc3")
-C.add_material("WNf3")
-
-C.add_material("WBg3")
-C.add_material("WBd3")
-
-C.add_material("WQd1")
-C.add_material("WKg1")
-
-C.add_material("Ba7")
-C.add_material("Bb7")
-C.add_material("Bc7")
-C.add_material("Bd5")
-C.add_material("Be6")
-C.add_material("Bf5")
-C.add_material("Bg7")
-C.add_material("Bh7")
-
-C.add_material("BRa8")
-C.add_material("BRf8")
-
-C.add_material("BNa5")
-C.add_material("BNe4")
-
-C.add_material("BBd6")
-C.add_material("BBc8")
-
-C.add_material("BQd8")
-C.add_material("BKg8")
-
-C.final_print_board()
-
-C.make_move_board_alg("g3","d6","WB")
-C.make_move_board_alg("c7","d6","B")   #walks into fork, engine not working properly fix
-C.final_print_board()
-"""
-C.setup_standard_board()
-C.final_print_board()
-while True:
-    print(C.eval())
-    a = C.run_engine()
-    print(a)
-
-    print(index_to_alg_notation[a[1][0][0]], index_to_alg_notation[a[1][0][1]])
-    print(index_to_alg_notation[a[1][1][0]], index_to_alg_notation[a[1][1][1]])
-    print(index_to_alg_notation[a[1][2][0]], index_to_alg_notation[a[1][2][1]])
-
-    x = index_to_alg_notation[a[1][0][0]]
-    y = index_to_alg_notation[a[1][0][1]]
-    print(x,y)    
-    C.make_move_board(a[1][0][0],a[1][0][1],a[1][0][2])
-    C.final_print_board()
-    C.eval()
-    while True:
-        from_square_notation = input("from_square_notation: ")
-        to_square_notation = input("to square notation: ")
-        piece = input("piece notation: ")
-        try:
-            if not is_legal(C, alg_notation_to_index[from_square_notation], alg_notation_to_index[to_square_notation],piece):
-                print("Not a legal move, try again")
-                continue
-            break
-        except:
-            print("Not a legal move, try again")
-            continue
-
-    if piece == "BQ":
-        print(C.piece_board)
-        print(alg_notation_to_index[from_square_notation])
-    if alg_notation_to_index[from_square_notation] == 42:
-        print(C.piece_board) 
-
-    C.make_move_board(alg_notation_to_index[from_square_notation],alg_notation_to_index[to_square_notation],piece)
+    def get_board_state_hash(self):
+        hash_key = 0
+        for i in self.all_bitboards:
+            hash_key*=18446744073709551616
+            hash_key+=i
