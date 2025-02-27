@@ -80,28 +80,35 @@ def north_east_ray_empty(self,square_notation:str):
         vision_board = np.uint64(vision_board | 1 << np.uint(square_index +9 * (i+1)))
     return np.uint64(vision_board), "WN", square_index
 
+
 def king_vision_board_empty(self,square_notation):
-    #TARKISTA
     square_index = alg_notation_to_index[square_notation]
     king_moves = [-9,-8,-7,-1,1,7,8,9]
     king_vision_board_empty = np.uint64(0)
+    col = square_index % 8
+
     for move in king_moves:
-        if  0 <= square_index + move <= 63:
-            king_vision_board_empty = np.uint64(king_vision_board_empty | 1 << np.uint64(square_index + move))
+        target = square_index+move
+        if  0 <= target <= 63:
+            target_col = (square_index+move) % 8
+            if abs(target_col - col) <= 1:
+                king_vision_board_empty = np.uint64(king_vision_board_empty | 1 << np.uint64(square_index + move))
     return king_vision_board_empty
 
 def black_pawn_vision_board_empty(self,square_notation): # EI TOIMI TEE SAMA KU WHITE PAWN FIX ASAP
     square_index = alg_notation_to_index[square_notation]
     pawn_moves = [-8]
     pawn_vision_board_empty = np.uint64(0)
+    two_move_vision_ray = np.uint64(0)
+
     if int(square_notation[1]) == 1:
         #todo promote queen
         return np.uint64(0) #placeholder 
-    if int(square_notation[1]) == 7: # tarkasta onko oikei :)1
-        pawn_moves.append(-16)   # voi theä vamrmaa nopeemmi
+    if int(square_notation[1]) == 7:
+        two_move_vision_ray = np.uint64(two_move_vision_ray | 1 << np.uint64(square_index-16))
     for move in pawn_moves:
         pawn_vision_board_empty = np.uint64(pawn_vision_board_empty | 1 << np.uint64(square_index+move))
-    return pawn_vision_board_empty
+    return pawn_vision_board_empty, two_move_vision_ray
 
 def black_pawn_attack(self, square_notation):
     square_index = alg_notation_to_index[square_notation]
@@ -124,7 +131,7 @@ def white_pawn_vision_board_empty(self,square_notation):
         #todo promote queen
         return np.uint64(0) #placeholder 
     if int(square_notation[1]) == 2: # tarkasta onko oikei :)
-        two_move_vision_ray = np.uint64(pawn_vision_board_empty | 1 << np.uint64(square_index+16))
+        two_move_vision_ray = np.uint64(two_move_vision_ray | 1 << np.uint64(square_index+16))
     for move in pawn_moves:
         pawn_vision_board_empty = np.uint64(pawn_vision_board_empty | 1 << np.uint64(square_index+move))
     return pawn_vision_board_empty, two_move_vision_ray

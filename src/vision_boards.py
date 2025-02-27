@@ -2,8 +2,8 @@ from piece_data import piece_representation, get_square_location_from_coordinate
 from vision_rays import *
 from annotation_data import alg_notation_to_index, index_to_alg_notation
 import numpy as np
-
-
+#KING CAN MOVE FROM A1 TO H1 FIX ASAPPP
+#add magic bitboards (?)
 def occupied_bitboard(bitboards):
     """ returns bitboard of all sqaures """
     #should be obselete when automatic occupancy updating done  ---- if deleted update board.full_board
@@ -238,23 +238,25 @@ def get_legal_moves_king(self,color:str,square_notation:str):
     return full_vision_bitboard
 
 def get_legal_white_pawn_moves(self,color:str,square_notation:str): 
-    #TESTAA
-    pawn_vision_board_one, pawn_vision_board_two = white_pawn_vision_board_empty(self, square_notation)
+    """returns all legal moves of a white pawn in a given square notation"""
+    pawn_vision_board, two_move = white_pawn_vision_board_empty(self, square_notation)
     all_bitboards = occupied_bitboard(self.all_bitboards)
     enemy_bitboard = occupied_bitboard(get_enemy_pieces(self,color))
+    
+    if pawn_vision_board & all_bitboards == 0:
+        pawn_vision_board |= two_move
 
     attack_board = white_pawn_attack(self, square_notation)
-    pawn_move_vision_board = pawn_vision_board_one & ~all_bitboards
-    if pawn_move_vision_board != np.uint64(0):
-        pawn_move_vision_board = pawn_vision_board_two & ~all_bitboards
-    full_vision_bitboard = (pawn_move_vision_board) | (attack_board & enemy_bitboard) #(friendly_bitboard & ~pawn_vision_board) | (attack_board & enemy_bitboard)
+    full_vision_bitboard = (pawn_vision_board & ~all_bitboards) | (attack_board & enemy_bitboard)
     return full_vision_bitboard
-""" could do both color pawn moves in same function """
 
 def get_legal_black_pawn_moves(self,color:str,square_notation:str): #can jump over pieces, fix #SAMA FIX KU VALKONE PAWN TEE ASSAP
-    pawn_vision_board = black_pawn_vision_board_empty(self, square_notation)
+    pawn_vision_board, two_move = black_pawn_vision_board_empty(self, square_notation)
     all_bitboards = occupied_bitboard(self.all_bitboards)
     enemy_bitboard = occupied_bitboard(get_enemy_pieces(self,color))
+
+    if pawn_vision_board & all_bitboards == 0:
+        pawn_vision_board |= two_move
 
     attack_board = black_pawn_attack(self, square_notation)
     full_vision_bitboard = (pawn_vision_board & ~all_bitboards) | (attack_board & enemy_bitboard) #(friendly_bitboard & ~pawn_vision_board) | (attack_board & enemy_bitboard)
