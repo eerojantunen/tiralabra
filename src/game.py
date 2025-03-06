@@ -1,4 +1,4 @@
-from temp import *
+from board import *
 
 class Game:
     def __init__(self):

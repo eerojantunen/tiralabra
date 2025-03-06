@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 from vision_boards import *
-from temp import Board
+from board import Board
 
 def test_adding_material():
     board = Board()
