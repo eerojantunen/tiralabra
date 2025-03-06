@@ -1,17 +1,15 @@
 import numpy as np
 from piece_data import piece_representation, get_square_location_from_coordinates
-from vision_boards import get_legal_moves_king, get_legal_white_pawn_moves, get_enemy_pieces, get_friendly_pieces, get_legal_moves_knight, get_legal_moves_queen, get_legal_moves_rook, bishop_vision_board_empty, legal_moves_of_piece, occupied_bitboard, knight_vision_bitboard, get_blocked_rays_bishop, get_legal_moves_bishop
-from Pieces import queen_vision_board_empty
 from annotation_data import alg_notation_to_index, index_to_alg_notation
-from vision_rays import north_ray_empty, south_ray_empty, west_ray_empty, east_ray_empty, south_west_ray_empty,south_east_ray_empty, north_west_ray_empty, north_east_ray_empty
 from evaluation import material_count
-import time
 from moves import *
 from engine import *
 from evaluation import *
+import time
 
-#TODO Remove essentially >50% of methods out of board class into appropriate file
-#np -> pythonin oma
+
+#TODO 
+# #np -> pythonin oma
 #muuta self.white yms numero listaan
 class Board():
     def __init__(self):
@@ -30,6 +28,7 @@ class Board():
         self.black_pawns = np.uint64(0)
 
         self.piece_board = {}
+
 
     @property
     def full_board(self):
@@ -87,7 +86,6 @@ class Board():
 
     def index_from_bitboard(self, bitboard): #compare speeds to other index from bitbarobd
         """ Returns list friendly indexes from bitboard """
-
         indexes = set()
         for index in range(64):
             if bitboard & (1 << index):
@@ -100,6 +98,7 @@ class Board():
         for piece_type, bitboard in self.bitboard_dict.items():
             indexes = self.index_from_bitboard(bitboard)
             self.piece_board[piece_type] = indexes
+
 
     def final_print_board(self):
         """function printing board with chess symbols"""
@@ -168,48 +167,6 @@ class Board():
         self.refresh_piece_board()
 
     
-    #### temporary methods, to be moved
-
-    def get_knight_vision_bitboard(self,square_notation:str):
-        """ temp """
-        return knight_vision_bitboard(self, square_notation)
-
-    def get_north_ray_empty(self,square_notation:str):
-        return north_ray_empty(self,square_notation)
-
-    def get_south_ray_empty(self,square_notation:str):
-        return south_ray_empty(self,square_notation)
-
-    def get_west_ray_empty(self,square_notation:str):
-        return west_ray_empty(self,square_notation)
-
-    def get_east_ray_empty(self,square_notation:str):
-        return east_ray_empty(self,square_notation)
-    
-    def get_south_west_ray_empty(self, square_notation:str):
-        return south_west_ray_empty(self, square_notation)
-    
-    def get_south_east_ray_empty(self,square_notation:str):
-        return south_east_ray_empty(self, square_notation)
-
-    def get_north_west_ray_empty(self, square_notation:str):
-        return north_west_ray_empty(self, square_notation)
-    
-    def get_north_east_ray_empty(self,square_notation:str):
-        return north_east_ray_empty(self, square_notation)
-
-    def get_legal_moves_of_piece(self,vision_board,color:str):
-        return legal_moves_of_piece(self, vision_board,color)
-
-    def get_bishop_vision_board_empty(self,square_notation):
-        return bishop_vision_board_empty(self,square_notation)
-
-    def get_queen_vision_board_empty(self,square_notation):
-        return queen_vision_board_empty(self,square_notation)
-
-    def blocked_rays_bishop(self,square_notation):
-        return get_blocked_rays_bishop(self,square_notation)
-
     def row_col_from_square_notation(self,square_location_as_notation):
         """ returns board row and column from algeabric notation (0-7)"""
         square_location = get_square_location_from_coordinates(square_location_as_notation)
@@ -217,14 +174,6 @@ class Board():
         col = square_location-((square_location // 8) * 8)
         return row, col
 
-    def copy_board(self): #mulla on syvä viha tätä metodia kohtaan. 90% varma että turha
-        board_copy = Board()
-        for key, value in self.__dict__.items():
-            if isinstance(value, np.uint64):
-                setattr(board_copy, key, np.uint64(value))
-            elif isinstance(value, dict):
-                setattr(board_copy, key, value.copy())
-        return board_copy
 
     """ debugu tool :)""" 
     def print_bb(self, vision_board, piece:str, square_index:int, color="x"):
@@ -239,15 +188,10 @@ class Board():
         board = board[::-1,:]   
         print(board, "\n")
 
-    #turha
-    def eval(self):
-        return evaluate(self)
-
-
-    def run_engine(self):
+    def run_engine(self,max_time_parameter):
         legal_moves = all_moves(self,"W")
         alku = time.time()
-        move_data = run_engine_local(self,legal_moves,4,True)
+        move_data = run_engine_local(self,legal_moves,4,True,max_time_parameter=max_time_parameter)
         print(time.time()-alku)
         return move_data
 
@@ -263,5 +207,5 @@ class Board():
     def get_board_state_hash(self):
         hash_key = 0
         for i in self.all_bitboards:
-            hash_key*=18446744073709551616
-            hash_key+=i
+            hash_key ^= i
+        return hash_key

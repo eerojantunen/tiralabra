@@ -1,4 +1,5 @@
 from piece_data import *
+import time
 
 piece_position_value_dict = {"W":white_pawn_weights,"WB":white_bishop_weights,"WN":white_knight_weights,
                              "WR":white_rook_weights, "WQ":white_queen_weights, "WK":white_king_weights,
@@ -18,7 +19,7 @@ def evaluate_piece_positions(self): #add all lists
 
 def material_count(self):
     material_diff = 0
-    for piece in self.piece_board:
+    for piece in self.piece_board: #tarkista self.piece_board
         material_diff += piece_value[piece] * len(self.piece_board[piece])
     return material_diff
 

@@ -10,21 +10,19 @@ def is_legal(self,from_square:int, to_square:int, piece):
         return False
     legal_move_function = piece_to_legal_moves_function(piece)
     legal_move_bitboard = legal_move_function(self, piece[0], index_to_alg_notation[from_square])
-    if to_square not in self.index_from_bitboard(legal_move_bitboard): #can probably done more efficient
+    if (legal_move_bitboard & (np.uint64(1) << to_square)) == 0: #new change, not 100% sure works flawlessly
         return False
     #add pin-check checker
     return True
 
 def update_full_board(self,from_square:int, to_square:int, piece):
     """ updates move to full_board """
-    self.full_board &= ~(np.uint(1) << from_square)
-    self.full_board |= np.uint(1) << to_square
+    self.full_board &= ~(np.uint64(1) << int(from_square))
+    self.full_board |= np.uint64(1) << int(to_square)
 
 
 def update_piece_board(self,from_square:int, to_square:int, piece):
     """ updates move to piece_board """
-    #if from_square == 60:
-        #print(from_square, to_square, piece)
     self.piece_board[piece].add(to_square)
     self.piece_board[piece].remove(from_square)
 
@@ -32,13 +30,12 @@ def update_piece_board(self,from_square:int, to_square:int, piece):
 
 def update_bitboard_of_moving(self,from_square:int, to_square:int, piece):
     """ updates the bitboard of the moving piece """
-    #to_move_bitboard = self.piece_annotation_to_bitboard(piece)
     target_bitboard_name = self.piece_annotation_to_bitboard_name(piece)
     to_move_bitboard = getattr(self, target_bitboard_name)
-    to_move_bitboard &= ~(np.uint(1) << from_square) #set bit at index from_square to 0 (maybe do seperate function to clear?)
-    to_move_bitboard |= np.uint(1) << to_square 
+    to_move_bitboard &= ~(np.uint64(1) << int(from_square)) #set bit at index from_square to 0 (maybe do seperate function to clear?)
+    to_move_bitboard |= np.uint64(1) << int(to_square) 
     setattr(self, target_bitboard_name, to_move_bitboard)
-    #XD
+    
 
 def get_piece_by_index(self,index):
     for key, value in self.piece_board.items():
@@ -46,15 +43,15 @@ def get_piece_by_index(self,index):
             return key
     return None
 
-def identify_takes(self,to_square, piece): #verify that works lolz
-    if self.full_board & (np.uint(1) << to_square) == np.uint64(0):
+def identify_takes(self,to_square, piece):
+    if self.full_board & (np.uint64(1) << int(to_square)) == np.uint64(0):
         return
     attacked_piece = get_piece_by_index(self, to_square)
     self.piece_board[attacked_piece].remove(to_square) #get piece on said index
 
     target_bitboard_name = self.piece_annotation_to_bitboard_name(attacked_piece)
     taken_bitboard = getattr(self, target_bitboard_name)
-    taken_bitboard &= ~(np.uint(1) << to_square)
+    taken_bitboard &= ~(np.uint64(1) << int(to_square))
     setattr(self, target_bitboard_name, taken_bitboard)
     
 
@@ -64,21 +61,19 @@ def make_move(self,from_square:int, to_square:int, piece):
         from_square - as index 0-63
         to_square - index 0-63
         """
-
     identify_takes(self,to_square, piece)
     update_bitboard_of_moving(self, from_square, to_square, piece)
     update_piece_board(self, from_square, to_square, piece)
-    #update_full_board(self, from_square, to_square, piece)
 
 def make_move_takes(self,from_square, to_square, piece, taken_piece):
     """ FORCE UPDATES take move according to from square and to square
         make move updated to include functionality of this function
     """
     make_move(self, from_square, to_square, piece)
-    self.full_board &= ~(np.uint(1) << to_square)
+    self.full_board &= ~(np.uint64(1) << int(to_square))
     self.piece_board[piece].remove(to_square)
 
-def all_moves(self,only_color=None): #probably not working correctly fix lolz #nvm
+def all_moves(self,only_color=None):
     """ returns all possible moves, or all moves of wanted color
         returns as (from_square, to_square, piece)"""
     all_move_list = []
@@ -91,7 +86,6 @@ def all_moves(self,only_color=None): #probably not working correctly fix lolz #n
             if value:
                 color = key[0]
                 legal_move_function = piece_to_legal_moves_function(key)
-
                 for square in value:
                     legal_move_bitboard = legal_move_function(self, color, index_to_alg_notation[square])
                     all_index = all_index_from_bitboard(legal_move_bitboard)

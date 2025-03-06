@@ -1,23 +1,30 @@
 from temp import *
-from engine import *
+
 class Game:
     def __init__(self):
         self.main_board = Board()
-        
+        self.max_move_time = 20
+
     def print_piece_names(self):
         print("White pawn: W\nWhite knight: WN\nWhite bishop: WB\nWhite rook: WR")
         print("White queen: WQ\nWhite king: WK\nBlack pawn: B\nBlack knight: BN\nBlack bishop: BB")
-        print("Black rook: BR\nBlack queen: BQ\nBlack king: BK")
+        print("Black rook: BR\nBlack queen: BQ\nBlack king: BK\n")
 
+    
 
     def run_game(self): #add mate
         self.main_board.final_print_board()
         while True:
+            alku = time.time()
             print("Thinking...")
-            move = self.main_board.run_engine()
+            move = self.main_board.run_engine(self.max_move_time)
             self.main_board.make_move_board(move[1][0][0],move[1][0][1],move[1][0][2])
             self.main_board.final_print_board()
+            if len(self.main_board.piece_board["BK"]) == 0:
+                print("Computer wins!")
+                break
             print(f"{move[1][0][2]} moves from {index_to_alg_notation[move[1][0][0]]} to {index_to_alg_notation[move[1][0][1]]}!\n")
+            print(time.time()-alku)
             while True:
                 print("Your move")
                 from_square_notation = input("from_square_notation: ")
@@ -32,38 +39,28 @@ class Game:
                     print("Not a legal move, try again")
                     continue
             self.main_board.make_move_board(alg_notation_to_index[from_square_notation],alg_notation_to_index[to_square_notation],piece)
+
+            x = self.main_board.get_board_state_hash()
+            print(x)
+
+            if len(self.main_board.piece_board["WK"]) == 0:
+                print("You win!")
+                break
             self.main_board.final_print_board()
 
     def new_game(self):
         self.main_board.setup_standard_board()
         self.run_game()
     
-    def load_ready_position(self):
-        self.main_board.add_material("Wa2")
-        self.main_board.add_material("Wb2")
-        self.main_board.add_material("Wc3")
-        self.main_board.add_material("Wd3")
-        self.main_board.add_material("We4")
-        self.main_board.add_material("Wh2")
-        self.main_board.add_material("WRa1")
-        self.main_board.add_material("WNb1")
-        self.main_board.add_material("WKg1")
-        self.main_board.add_material("WQh5")
-        self.main_board.add_material("WBh6")
-        self.main_board.add_material("WRf7")
+    
 
-        self.main_board.add_material("Ba7")
-        self.main_board.add_material("Bb7")
-        self.main_board.add_material("Bc7")
-        self.main_board.add_material("Bd6")
-        self.main_board.add_material("Bh7")
-        self.main_board.add_material("BRa8")
-        self.main_board.add_material("BQd8")
-        self.main_board.add_material("BRg8")
+    def load_ready_position(self):
         self.main_board.add_material("BKh8")
-        self.main_board.add_material("BNc6")
-        self.main_board.add_material("BBe6")
-        self.main_board.add_material("BBg3")
+        self.main_board.add_material("BQh6")
+        self.main_board.add_material("BRe6")
+        self.main_board.add_material("WKg1")
+        self.main_board.add_material("WQe4")
+        self.main_board.add_material("WRc2")
         self.run_game()
 
     def instructions(self):
@@ -74,20 +71,38 @@ class Game:
         print("\nThe piece types are:")
         self.print_piece_names()
 
+    def change_parameters(self):
+        while True:
+            selection = int(input(f"1: Change amount of time computer has per move. Current: {self.max_move_time}s\n0: Return\nInput: "))
+            if selection == 1:
+                new_max_time = int(input("New amount of time computer has per move: "))
+                self.max_move_time = new_max_time
+                print("Updated succesfully!")
+            elif selection == 0:
+                break
+            else:
+                print("\nInvalid selection \n")
+
+
     def game_selection(self):
         """ select game type (new, loaded position)"""
         while True:
-            selection = int(input("1. Setup standard board \n2. Load position from memory\n3. Instructions \nInput: "))
+            selection = int(input("1. Setup standard board \n2. Load position from memory\n3. Instructions \n4. Change engine parameters \nInput: "))
             if selection == 1:
                 self.new_game()
                 break
             elif selection == 2:
                 self.load_ready_position()
                 break
-            elif selection ==3:
+            elif selection == 3:
                 self.instructions()
-            print("Invalid selection \n")
+            elif selection == 4:
+                self.change_parameters()
+            else:
+                print("\nInvalid selection \n")
+
     
+
 
 game = Game()
 game.game_selection()

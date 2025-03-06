@@ -2,11 +2,11 @@ from piece_data import piece_representation, get_square_location_from_coordinate
 from vision_rays import *
 from annotation_data import alg_notation_to_index, index_to_alg_notation
 import numpy as np
-#KING CAN MOVE FROM A1 TO H1 FIX ASAPPP
 #add magic bitboards (?)
+
 def occupied_bitboard(bitboards):
     """ returns bitboard of all sqaures """
-    #should be obselete when automatic occupancy updating done  ---- if deleted update board.full_board
+    #should be obselete when automatic occupancy updating done  ---- if deleted update board.full_board --- should improve speed
     occupied_bitboard = np.uint64(0)
     for i in bitboards:
         occupied_bitboard = occupied_bitboard | i
@@ -250,7 +250,7 @@ def get_legal_white_pawn_moves(self,color:str,square_notation:str):
     full_vision_bitboard = (pawn_vision_board & ~all_bitboards) | (attack_board & enemy_bitboard)
     return full_vision_bitboard
 
-def get_legal_black_pawn_moves(self,color:str,square_notation:str): #can jump over pieces, fix #SAMA FIX KU VALKONE PAWN TEE ASSAP
+def get_legal_black_pawn_moves(self,color:str,square_notation:str): 
     pawn_vision_board, two_move = black_pawn_vision_board_empty(self, square_notation)
     all_bitboards = occupied_bitboard(self.all_bitboards)
     enemy_bitboard = occupied_bitboard(get_enemy_pieces(self,color))
@@ -259,7 +259,7 @@ def get_legal_black_pawn_moves(self,color:str,square_notation:str): #can jump ov
         pawn_vision_board |= two_move
 
     attack_board = black_pawn_attack(self, square_notation)
-    full_vision_bitboard = (pawn_vision_board & ~all_bitboards) | (attack_board & enemy_bitboard) #(friendly_bitboard & ~pawn_vision_board) | (attack_board & enemy_bitboard)
+    full_vision_bitboard = (pawn_vision_board & ~all_bitboards) | (attack_board & enemy_bitboard) 
     return full_vision_bitboard
 
 def piece_to_legal_moves_function(piece):
