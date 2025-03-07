@@ -45,7 +45,38 @@ class Game:
 
 
     def load_ready_position(self):
+        self.main_board.add_material("BKg8")
+        self.main_board.add_material("Bg7")
+        self.main_board.add_material("Bh7")
+        self.main_board.add_material("Bc5")
+        self.main_board.add_material("Ba6")
+        self.main_board.add_material("Bb7")
+        self.main_board.add_material("BRa8")
+        self.main_board.add_material("BNb8")
+        self.main_board.add_material("BBc8")
+        self.main_board.add_material("BQd8")
+        self.main_board.add_material("BRf8")
+        self.main_board.add_material("BBd6")
+        self.main_board.add_material("Be6")
+        self.main_board.add_material("BNf6")
+        self.main_board.add_material("Bf7")
 
+        self.main_board.add_material("Wa2")
+        self.main_board.add_material("Wb2")
+        self.main_board.add_material("Wf2")
+        self.main_board.add_material("Wg2")
+        self.main_board.add_material("Wh2")
+        self.main_board.add_material("WKg1")
+        self.main_board.add_material("WRf1")
+        self.main_board.add_material("WQd1")
+        self.main_board.add_material("WRa1")
+        self.main_board.add_material("WNf3")
+        self.main_board.add_material("WNc3")
+        self.main_board.add_material("WBc4")
+        self.main_board.add_material("WBf4")
+        self.main_board.add_material("Wd4")
+        self.main_board.add_material("We3")        
+        """
         self.main_board.add_material("BKh8")
         self.main_board.add_material("BQh6")
         self.main_board.add_material("BRe6")
@@ -61,7 +92,7 @@ class Game:
         self.main_board.add_material("WNb7")
         self.main_board.add_material("Wg2")
         self.main_board.add_material("Wh3")
-
+        """
         self.run_game()
 
     def instructions(self):
