@@ -13,19 +13,19 @@ import time
 #muuta self.white yms numero listaan
 class Board():
     def __init__(self):
-        self.white_rooks = np.uint64(0)
-        self.white_bishops = np.uint64(0)
-        self.white_knights = np.uint64(0)
-        self.white_queens = np.uint64(0)
-        self.white_king = np.uint64(0)
-        self.white_pawns = np.uint64(0)
+        self.white_rooks = int(0)
+        self.white_bishops = int(0)
+        self.white_knights = int(0)
+        self.white_queens = int(0)
+        self.white_king = int(0)
+        self.white_pawns = int(0)
 
-        self.black_rooks = np.uint64(0)
-        self.black_bishops = np.uint64(0)
-        self.black_knights = np.uint64(0)
-        self.black_queens = np.uint64(0)
-        self.black_king = np.uint64(0)
-        self.black_pawns = np.uint64(0)
+        self.black_rooks = int(0)
+        self.black_bishops = int(0)
+        self.black_knights = int(0)
+        self.black_queens = int(0)
+        self.black_king = int(0)
+        self.black_pawns = int(0)
 
         self.piece_board = {}
 
@@ -69,19 +69,19 @@ class Board():
 
     def setup_standard_board(self):
         """ setup initial bitboard positions for pieces """
-        self.white_rooks = np.uint64(self.white_rooks | 1 << 0 | 1 << 7)
-        self.white_knights = np.uint64(self.white_knights | 1 << 1 | 1 << 6)
-        self.white_bishops = np.uint64(self.white_bishops | 1 << 2 | 1 << 5)
-        self.white_queens = np.uint64(self.white_queens | 1 << 3)
-        self.white_king = np.uint64(self.white_king | 1 << 4)
+        self.white_rooks = int(self.white_rooks | 1 << 0 | 1 << 7)
+        self.white_knights = int(self.white_knights | 1 << 1 | 1 << 6)
+        self.white_bishops = int(self.white_bishops | 1 << 2 | 1 << 5)
+        self.white_queens = int(self.white_queens | 1 << 3)
+        self.white_king = int(self.white_king | 1 << 4)
         for i in range(8):
-            self.white_pawns = np.uint64(self.white_pawns | 1 << 8+i)
-            self.black_pawns = np.uint64(self.black_pawns | 1 << 48+i)
-        self.black_rooks = np.uint64(self.black_rooks | 1 << 56 | 1 << 63)
-        self.black_knights = np.uint64(self.black_knights | 1 << 57 | 1 << 62)
-        self.black_bishops = np.uint64(self.black_bishops | 1 << 58 | 1 << 61)
-        self.black_queens = np.uint64(self.black_queens | 1 << 59)
-        self.black_king = np.uint64(self.black_king | 1 << 60)
+            self.white_pawns = int(self.white_pawns | 1 << 8+i)
+            self.black_pawns = int(self.black_pawns | 1 << 48+i)
+        self.black_rooks = int(self.black_rooks | 1 << 56 | 1 << 63)
+        self.black_knights = int(self.black_knights | 1 << 57 | 1 << 62)
+        self.black_bishops = int(self.black_bishops | 1 << 58 | 1 << 61)
+        self.black_queens = int(self.black_queens | 1 << 59)
+        self.black_king = int(self.black_king | 1 << 60)
         self.refresh_piece_board()
 
     def index_from_bitboard(self, bitboard): #compare speeds to other index from bitbarobd
@@ -162,7 +162,7 @@ class Board():
 
         correct_bitboard, square_location = self.notation_decoder(notation)
         current_value = getattr(self, correct_bitboard)
-        new_value = np.uint64(current_value | 1 << square_location)
+        new_value = int(current_value | 1 << square_location)
         setattr(self, correct_bitboard, new_value)
         self.refresh_piece_board()
 

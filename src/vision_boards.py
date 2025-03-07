@@ -7,7 +7,7 @@ import numpy as np
 def occupied_bitboard(bitboards):
     """ returns bitboard of all sqaures """
     #should be obselete when automatic occupancy updating done  ---- if deleted update board.full_board --- should improve speed
-    occupied_bitboard = np.uint64(0)
+    occupied_bitboard = int(0)
     for i in bitboards:
         occupied_bitboard = occupied_bitboard | i
     return occupied_bitboard
@@ -24,7 +24,7 @@ def get_friendly_pieces(self,color:str):
     return color_to_board_dict[color]
 
 def or_two_boards(bitboard_a, bitboard_b):
-    bitboard = np.uint64(np.uint64(bitboard_a) | np.uint64(bitboard_b))
+    bitboard = int(int(bitboard_a) | int(bitboard_b))
     return bitboard
 
 
@@ -33,7 +33,7 @@ def legal_moves_of_piece(self,vision_bitboard,color:str):
         friendly_bitboard =  occupied_bitboard(self.white_bitboards)
     else:
         friendly_bitboard =  occupied_bitboard(self.black_bitboards)
-    intersection = np.uint64(vision_bitboard) & np.uint64(friendly_bitboard)
+    intersection = int(int(int(vision_bitboard) & int(friendly_bitboard)))
     return intersection
     
 """ Empty vision bitboards of pieces """
@@ -42,36 +42,36 @@ def knight_vision_bitboard(self,square_notation:str):
         """ returns a vision board of a knight on a specific square"""
         square_index = get_square_location_from_coordinates(square_notation)
         row, col = self.row_col_from_square_notation(square_notation)
-        vision_board = np.uint64(0)
+        vision_board = int(0)
         knight_moves = [(2,1),(2,-1),(-2,1),(-2,-1),(1,2),(1,-2),(-1,2),(-1,-2)] #possible knight moves in row column changes
         for move_row, move_col in knight_moves:
             row_change = move_row + row
             col_change = move_col + col
             if 0 <= row_change < 8 and 0 <= col_change < 8:
                 offset = move_row * 8 + move_col
-                vision_board = np.uint64(vision_board | 1 << (square_index + offset))
+                vision_board = int(vision_board | 1 << (square_index + offset))
 
-        return np.uint64(vision_board), "WN", square_index
+        return int(vision_board), "WN", square_index
 
 """ empty vision boards, might not need """
 
 def rook_vision_board_empty(self, square_notation):
-    vision_board = np.uint64(west_ray_empty(self, square_notation)[0] |
+    vision_board = int(west_ray_empty(self, square_notation)[0] |
                             east_ray_empty(self, square_notation)[0] |
                             north_ray_empty(self, square_notation)[0] | 
                             south_ray_empty(self, square_notation)[0])
-    return np.uint64(vision_board)
+    return int(vision_board)
 
 def bishop_vision_board_empty(self,square_notation):
-    vision_board = np.uint64(north_west_ray_empty(self, square_notation)[0] |
+    vision_board = int(north_west_ray_empty(self, square_notation)[0] |
                             north_east_ray_empty(self, square_notation)[0] |
                             south_west_ray_empty(self, square_notation)[0] | 
                             south_east_ray_empty(self, square_notation)[0])
-    return np.uint64(vision_board)
+    return int(vision_board)
 
 def queen_vision_board_empty(self, square_notation):
-    queen_vb_empty = np.uint64(rook_vision_board_empty(self,square_notation) | bishop_vision_board_empty(self,square_notation))
-    return np.uint64(queen_vb_empty)
+    queen_vb_empty = int(rook_vision_board_empty(self,square_notation) | bishop_vision_board_empty(self,square_notation))
+    return int(queen_vb_empty)
 
 
 """ legal moves """
@@ -81,9 +81,9 @@ def attack_squares(self,vision_board,color:str):
         friendly_bitboard =  occupied_bitboard(self.white_bitboards)
     else:
         friendly_bitboard =  occupied_bitboard(self.black_bitboards)
-    intersection = np.uint64(np.uint64(vision_board) & np.uint64(friendly_bitboard))
+    intersection = int(int(vision_board) & int(friendly_bitboard))
 
-    return intersection
+    return int(intersection)
 
 def lsb_forward(bitboard):
     #returns as index
@@ -98,100 +98,100 @@ def msb_backward(bitboard):
 
 def get_blocked_rays_bishop(self, square_notation):
     """ returns vision bitboard of bishop with blocks accounted for """
-    blockers = np.uint64(0)
+    blockers = int(0)
     intersection_board = occupied_bitboard(self.all_bitboards) #improve
 
     """ Get south west ray with blocks """
     south_west_ray = south_west_ray_empty(self,square_notation)[0]
-    intersections = south_west_ray & intersection_board
+    intersections = int(south_west_ray & intersection_board)
     if intersections != -1:
         first_block = msb_backward(intersections)
         if first_block != -1:
-            blockers |= np.uint64(1) << first_block
+            blockers |= int(1) << first_block
             reflex_ray = north_east_ray_empty(self,index_to_alg_notation[first_block])[0]
             south_west_ray &= reflex_ray
 
     """ Get south east ray with blocks """
     south_east_ray = south_east_ray_empty(self,square_notation)[0]
-    intersections = south_east_ray & intersection_board
+    intersections = int(south_east_ray & intersection_board)
     if intersections != -1:
         first_block = msb_backward(intersections)
         if first_block != -1:
-            blockers |= np.uint64(1) << first_block
+            blockers |= int(1) << first_block
             reflex_ray = north_west_ray_empty(self,index_to_alg_notation[first_block])[0]
             south_east_ray &= reflex_ray
 
     """ Get north west ray with blocks """
     north_west_ray = north_west_ray_empty(self,square_notation)[0]
-    intersections = north_west_ray & intersection_board
+    intersections = int(north_west_ray & intersection_board)
     if intersections != -1:
         first_block = lsb_forward(intersections)
         if first_block != -1:
-            blockers |= np.uint64(1) << first_block
+            blockers |= int(1) << first_block
             reflex_ray = south_east_ray_empty(self,index_to_alg_notation[first_block])[0]
             north_west_ray &= reflex_ray
 
     """  Get north east ray with blocks """
     north_east_ray = north_east_ray_empty(self,square_notation)[0]
-    intersections = north_east_ray & intersection_board
+    intersections = int(north_east_ray & intersection_board)
     if intersections != -1:
         first_block = lsb_forward(intersections)
         if first_block != -1:
-            blockers |= np.uint64(1) << first_block
+            blockers |= int(1) << first_block
             reflex_ray = south_west_ray_empty(self,index_to_alg_notation[first_block])[0]
             north_east_ray &= reflex_ray
 
     vision_bitboard = north_east_ray | north_west_ray | south_east_ray | south_west_ray
-    return vision_bitboard, np.uint64(blockers)
+    return vision_bitboard, int(blockers)
 
 def get_blocked_rays_rook(self, square_notation):
-    blockers = np.uint64(0)
+    blockers = int(0)
     intersection_board = occupied_bitboard(self.all_bitboards) #improve
    
     """ Get north ray with blocks """
     north_ray = north_ray_empty(self,square_notation)[0]
-    intersections = north_ray & intersection_board
+    intersections = int(int(north_ray) & int(intersection_board))
     if intersections != -1:
         first_block = lsb_forward(intersections)
         if first_block != -1:
-            blockers |= np.uint64(1) << first_block
+            blockers |= int(1) << first_block
             reflex_ray = south_ray_empty(self,index_to_alg_notation[first_block])[0]
             north_ray &= reflex_ray
 
            
     """ Get east ray with blocks """
     east_ray = east_ray_empty(self,square_notation)[0]
-    intersections = east_ray & intersection_board
+    intersections = int(east_ray & intersection_board)
     if intersections != -1:
         first_block = lsb_forward(intersections)
         if first_block != -1:
-            blockers |= np.uint64(1) << first_block
+            blockers |= int(1) << first_block
             reflex_ray = west_ray_empty(self,index_to_alg_notation[first_block])[0]
             east_ray &= reflex_ray
 
     """ Get south ray with blocks """
     south_ray = south_ray_empty(self,square_notation)[0]
-    intersections = south_ray & intersection_board
+    intersections = int(south_ray & intersection_board)
     if intersections != -1:
         first_block = msb_backward(intersections)
         if first_block != -1:
-            blockers |= np.uint64(1) << first_block
+            blockers |= int(1) << first_block
             reflex_ray = north_ray_empty(self,index_to_alg_notation[first_block])[0]
             south_ray &= reflex_ray
 
     """ Get west ray with blocks """
     west_ray = west_ray_empty(self,square_notation)[0]
-    intersections = west_ray & intersection_board
+    intersections = int(west_ray & intersection_board)
     if intersections != -1:
         first_block = msb_backward(intersections)
         if first_block != -1:
-            blockers |= np.uint64(1) << first_block
+            blockers |= int(1) << first_block
             reflex_ray = east_ray_empty(self,index_to_alg_notation[first_block])[0]
             west_ray &= reflex_ray
 
     vision_bitboard = north_ray | west_ray | south_ray | east_ray
 
-    return vision_bitboard, np.uint64(blockers)
+    return int(vision_bitboard), int(blockers)
 
 
 def get_legal_moves_bishop(self,color:str, square_notation:str):
@@ -202,7 +202,7 @@ def get_legal_moves_bishop(self,color:str, square_notation:str):
     enemy_bitboard = get_enemy_pieces(self,color)
     enemy_bitboard = occupied_bitboard(enemy_bitboard)
     vision_board_attacked = blockers & enemy_bitboard
-    full_vision_bitboard = vision_board_blocked | vision_board_attacked
+    full_vision_bitboard = int(vision_board_blocked | vision_board_attacked)
     return full_vision_bitboard
     
 
@@ -212,8 +212,9 @@ def get_legal_moves_rook(self,color:str,square_notation:str):
     vision_board_blocked, blockers = get_blocked_rays_rook(self, square_notation)
     enemy_bitboard = get_enemy_pieces(self,color)
     enemy_bitboard = occupied_bitboard(enemy_bitboard)
-    vision_board_attacked = blockers & enemy_bitboard
-    full_vision_bitboard = vision_board_blocked | vision_board_attacked
+    vision_board_attacked = int(blockers & enemy_bitboard)
+    
+    full_vision_bitboard:int = vision_board_blocked | vision_board_attacked
 
     return full_vision_bitboard
 
@@ -259,7 +260,7 @@ def get_legal_black_pawn_moves(self,color:str,square_notation:str):
         pawn_vision_board |= two_move
 
     attack_board = black_pawn_attack(self, square_notation)
-    full_vision_bitboard = (pawn_vision_board & ~all_bitboards) | (attack_board & enemy_bitboard) 
+    full_vision_bitboard = int((pawn_vision_board & ~all_bitboards) | (attack_board & enemy_bitboard)) 
     return full_vision_bitboard
 
 def piece_to_legal_moves_function(piece):
@@ -271,7 +272,7 @@ def piece_to_legal_moves_function(piece):
     correct_function = get_legal_moves[piece]
     return correct_function
 
-def all_index_from_bitboard(bitboard):
+def all_index_from_bitboard_obselete(bitboard):
     """ returns index of all 1 bits of a given bitboard """
     all_index = []
     bitboard = int(bitboard)
@@ -280,3 +281,11 @@ def all_index_from_bitboard(bitboard):
         all_index.append(index)
         bitboard &= bitboard -1
     return all_index
+
+def all_index_from_bitboard(bitboard): #compare speeds to other index from bitbarobd
+        """ Returns list friendly indexes from bitboard """
+        indexes = set()
+        for index in range(64):
+            if bitboard & (1 << index):
+                indexes.add(index)
+        return indexes
