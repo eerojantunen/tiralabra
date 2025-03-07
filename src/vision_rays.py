@@ -103,7 +103,7 @@ def black_pawn_vision_board_empty(self,square_notation): # EI TOIMI TEE SAMA KU 
 
     if int(square_notation[1]) == 1:
         #todo promote queen
-        return np.uint64(0) #placeholder 
+        return np.uint64(0), np.uint64(0) #placeholder 
     if int(square_notation[1]) == 7:
         two_move_vision_ray = np.uint64(two_move_vision_ray | 1 << np.uint64(square_index-16))
     for move in pawn_moves:
@@ -129,7 +129,7 @@ def white_pawn_vision_board_empty(self,square_notation):
     two_move_vision_ray = np.uint64(0)
     if int(square_notation[1]) == 8:
         #todo promote queen
-        return np.uint64(0) #placeholder 
+        return np.uint64(0), np.uint64(0) #placeholder 
     if int(square_notation[1]) == 2: # tarkasta onko oikei :)
         two_move_vision_ray = np.uint64(two_move_vision_ray | 1 << np.uint64(square_index+16))
     for move in pawn_moves:
