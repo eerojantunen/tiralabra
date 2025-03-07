@@ -53,6 +53,7 @@ def identify_takes(self,to_square, piece):
     taken_bitboard = getattr(self, target_bitboard_name)
     taken_bitboard &= ~(np.uint64(1) << int(to_square))
     setattr(self, target_bitboard_name, taken_bitboard)
+    return attacked_piece
     
 
 
@@ -61,9 +62,11 @@ def make_move(self,from_square:int, to_square:int, piece):
         from_square - as index 0-63
         to_square - index 0-63
         """
-    identify_takes(self,to_square, piece)
+    captured_piece = identify_takes(self,to_square, piece)
     update_bitboard_of_moving(self, from_square, to_square, piece)
     update_piece_board(self, from_square, to_square, piece)
+    move_data = {"piece":piece,"from_square":from_square,"to_square":to_square,"captured_piece":captured_piece}
+    return move_data
 
 def make_move_takes(self,from_square, to_square, piece, taken_piece):
     """ FORCE UPDATES take move according to from square and to square

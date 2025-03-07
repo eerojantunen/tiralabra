@@ -29,7 +29,6 @@ def run_engine_local(current_board, legal_moves, depth, maxing, max_time_paramet
         depth += 1
     print("depth",depth-1)
     return best_move
-
 def order_moves(board_hash, legal_moves):
     if board_hash in move_dict:
         best_move = move_dict.get(board_hash)
@@ -57,15 +56,12 @@ def alphabetaminimax(current_board, legal_moves, depth, maxing, move_history = [
         for move in ordered_moves:
             if time.time()-initial_time >= max_time:
                 break
-
-            new_board = copy.deepcopy(current_board) 
-            new_board.make_move_board(move[0],move[1],move[2])
-            new_moves = all_moves(new_board,"B")
+            current_board.make_move_board(move[0],move[1],move[2])
+            new_moves = all_moves(current_board,"B")
             new_move_history = move_history.copy()
             new_move_history.append(move)
-
-            score = alphabetaminimax(new_board, new_moves, depth-1, False, new_move_history, alpha, beta)     
-            
+            score = alphabetaminimax(current_board, new_moves, depth-1, False, new_move_history, alpha, beta)  
+            current_board.undo_move_board()
             if score:
                 if max_score[0] < score[0]:
                     max_score = score
@@ -81,14 +77,12 @@ def alphabetaminimax(current_board, legal_moves, depth, maxing, move_history = [
         for move in ordered_moves:
             if time.time()-initial_time >= max_time:
                 break
-
-            new_board = copy.deepcopy(current_board)
-            new_board.make_move_board(move[0],move[1],move[2])
-            new_moves = all_moves(new_board,"W")
+            current_board.make_move_board(move[0],move[1],move[2])
+            new_moves = all_moves(current_board,"W")
             new_move_history = move_history.copy()
             new_move_history.append(move)
-            
-            score = alphabetaminimax(new_board, new_moves, depth-1, True, new_move_history, alpha, beta)
+            score = alphabetaminimax(current_board, new_moves, depth-1, True, new_move_history, alpha, beta)
+            current_board.undo_move_board()
             if score:
                 if min_score[0] > score[0]:
                     min_score = score

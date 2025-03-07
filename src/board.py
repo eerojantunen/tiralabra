@@ -28,7 +28,7 @@ class Board():
         self.black_pawns = np.uint64(0)
 
         self.piece_board = {}
-
+        self.move_history = []
 
     @property
     def full_board(self):
@@ -197,8 +197,32 @@ class Board():
 
     def make_move_board(self, from_square, to_square, piece):
         """ as index from and to"""
-        make_move(self,from_square,to_square,piece)
+        move_data = make_move(self,from_square,to_square,piece)
+        self.move_history.append(move_data)
+
+    def undo_move_board(self):
+        if not self.move_history:
+            return False 
+        last_move = self.move_history.pop()
+        piece = last_move['piece']
+        from_square = last_move['from_square']
+        to_square = last_move['to_square']
+        captured_piece = last_move.get('captured_piece', None)
+
+        bitboard_name = self.piece_annotation_to_bitboard_name(piece)
+        current_value = getattr(self, bitboard_name)
+        new_value = current_value ^ (np.uint64(1) << to_square)
+        new_value = np.uint64(new_value | (1 << from_square))
+        setattr(self, bitboard_name, new_value)
+        
+        if captured_piece:
+            captured_bitboard_name = self.piece_annotation_to_bitboard_name(captured_piece)
+            captured_value = getattr(self, captured_bitboard_name)
+            restored_value = np.uint64(captured_value | (1 << to_square))
+            setattr(self, captured_bitboard_name, restored_value)
     
+        self.refresh_piece_board()
+
     def make_move_board_alg(self,from_square,to_square,piece):
         from_square = alg_notation_to_index[from_square]
         to_square = alg_notation_to_index[to_square]
