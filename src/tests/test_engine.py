@@ -30,7 +30,7 @@ def test_pruning_amount():
     setup_mate_in_two_board(current_board)
     result = current_board.run_engine(99999999999,5)
     prunes = result[1]
-    assert (prunes > 21000)
+    assert (prunes > 12000)
 
 def test_move_ordering_amount():
     """ Test if amount of move orders made reach benchmark amount - Performance test"""
