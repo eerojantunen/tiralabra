@@ -4,4 +4,9 @@
 
 
 Coverage:
+
 ![Näyttökuva 2025-03-09 234146](https://github.com/user-attachments/assets/4f6f9c05-77c0-4aaf-baa8-d65c52d85df4)
+
+Tests:
+
+![Näyttökuva 2025-03-09 235456](https://github.com/user-attachments/assets/af2854b9-8632-4a82-a5a2-642ca3ca6dcd)
