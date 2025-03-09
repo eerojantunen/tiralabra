@@ -2,10 +2,6 @@ from piece_data import piece_representation, get_square_location_from_coordinate
 import numpy as np
 from annotation_data import alg_notation_to_index, index_to_alg_notation
 
-
-#TODO
-#why are rays returning "WN" ??? :DDD
-#+ is square index returning necessary
 def north_ray_empty(self, square_notation:str):
     """ returns north ray vision bitboard from given square"""
     square_index = alg_notation_to_index[square_notation]
@@ -82,6 +78,7 @@ def north_east_ray_empty(self,square_notation:str):
 
 
 def king_vision_board_empty(self,square_notation):
+    """ returns bitboard of legal king moves on an otherwise empty board """
     square_index = alg_notation_to_index[square_notation]
     king_moves = [-9,-8,-7,-1,1,7,8,9]
     king_vision_board_empty = np.uint64(0)
@@ -95,7 +92,8 @@ def king_vision_board_empty(self,square_notation):
                 king_vision_board_empty = np.uint64(king_vision_board_empty | 1 << np.uint64(square_index + move))
     return king_vision_board_empty
 
-def black_pawn_vision_board_empty(self,square_notation): # EI TOIMI TEE SAMA KU WHITE PAWN FIX ASAP
+def black_pawn_vision_board_empty(self,square_notation):
+    """ returns bitboard of legal black pawn moves on an otherwise empty board """
     square_index = alg_notation_to_index[square_notation]
     pawn_moves = [-8]
     pawn_vision_board_empty = np.uint64(0)
@@ -111,6 +109,8 @@ def black_pawn_vision_board_empty(self,square_notation): # EI TOIMI TEE SAMA KU 
     return pawn_vision_board_empty, two_move_vision_ray
 
 def black_pawn_attack(self, square_notation):
+    """ returns bitboard of legal black pawn attack moves """
+
     square_index = alg_notation_to_index[square_notation]
     pawn_attack_board_empty = np.uint64(0)
     if int(square_notation[1]) > 1:
@@ -122,15 +122,16 @@ def black_pawn_attack(self, square_notation):
     return np.uint64(0)
 
 def white_pawn_vision_board_empty(self,square_notation):
-    #TARKISTA
+    """ returns bitboard of legal white pawn moves on an otherwise empty board """
+
     square_index = alg_notation_to_index[square_notation]
     pawn_moves = [8]
     pawn_vision_board_empty = np.uint64(0)
     two_move_vision_ray = np.uint64(0)
     if int(square_notation[1]) == 8:
         #todo promote queen
-        return np.uint64(0), np.uint64(0) #placeholder 
-    if int(square_notation[1]) == 2: # tarkasta onko oikei :)
+        return np.uint64(0), np.uint64(0) 
+    if int(square_notation[1]) == 2: 
         two_move_vision_ray = np.uint64(two_move_vision_ray | 1 << np.uint64(square_index+16))
     for move in pawn_moves:
         pawn_vision_board_empty = np.uint64(pawn_vision_board_empty | 1 << np.uint64(square_index+move))
@@ -138,6 +139,7 @@ def white_pawn_vision_board_empty(self,square_notation):
 
 
 def white_pawn_attack(self,square_notation):
+    """ returns bitboard of legal white pawn attack moves """
     square_index = alg_notation_to_index[square_notation]
     pawn_attack_board_empty = np.uint64(0)
     if int(square_notation[1]) < 8:

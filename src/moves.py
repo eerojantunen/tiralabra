@@ -4,13 +4,15 @@ from piece_data import *
 from annotation_data import *
 
 def is_legal(self,from_square:int, to_square:int, piece):
+    """ Returns a boolean on if a given move is legal or not """
+
     if piece not in self.piece_board:
         return False
     if from_square not in self.piece_board[piece]:
         return False
     legal_move_function = piece_to_legal_moves_function(piece)
     legal_move_bitboard = legal_move_function(self, piece[0], index_to_alg_notation[from_square])
-    if (legal_move_bitboard & (np.uint64(1) << to_square)) == 0: #new change, not 100% sure works flawlessly
+    if (legal_move_bitboard & (np.uint64(1) << to_square)) == 0:
         return False
     #add pin-check checker
     return True
@@ -32,22 +34,25 @@ def update_bitboard_of_moving(self,from_square:int, to_square:int, piece):
     """ updates the bitboard of the moving piece """
     target_bitboard_name = self.piece_annotation_to_bitboard_name(piece)
     to_move_bitboard = getattr(self, target_bitboard_name)
-    to_move_bitboard &= ~(np.uint64(1) << int(from_square)) #set bit at index from_square to 0 (maybe do seperate function to clear?)
+    to_move_bitboard &= ~(np.uint64(1) << int(from_square))
     to_move_bitboard |= np.uint64(1) << int(to_square) 
     setattr(self, target_bitboard_name, to_move_bitboard)
     
 
 def get_piece_by_index(self,index):
+    """ Returns piece type by a given index on the board if exists"""
     for key, value in self.piece_board.items():
         if index in value:
             return key
     return None
 
 def identify_takes(self,to_square, piece):
+    """ if a given to square has a piece updates its bitboard and piece_board dict appropriately
+        and returns the type of piece"""
     if self.full_board & (np.uint64(1) << int(to_square)) == np.uint64(0):
         return
     attacked_piece = get_piece_by_index(self, to_square)
-    self.piece_board[attacked_piece].remove(to_square) #get piece on said index
+    self.piece_board[attacked_piece].remove(to_square)
 
     target_bitboard_name = self.piece_annotation_to_bitboard_name(attacked_piece)
     taken_bitboard = getattr(self, target_bitboard_name)

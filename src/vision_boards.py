@@ -5,41 +5,26 @@ import numpy as np
 #add magic bitboards (?)
 
 def occupied_bitboard(bitboards):
-    """ returns bitboard of all sqaures """
+    """ Returns bitboard of all sqaures """
     #should be obselete when automatic occupancy updating done  ---- if deleted update board.full_board --- should improve speed
     occupied_bitboard = np.uint64(0)
     for i in bitboards:
         occupied_bitboard = occupied_bitboard | i
     return occupied_bitboard
 
-
 def get_enemy_pieces(self,color:str):
-    """ returns enemy bitboards according to given color in string from W / B """
+    """ Returns enemy bitboards according to given color in string from W / B """
     color_to_board_dict = {"W":self.black_bitboards,"B":self.white_bitboards}
     return color_to_board_dict[color]
 
 def get_friendly_pieces(self,color:str):
-    """ returns friendly bitboards according to given color in string from W / B """
+    """ Returns friendly bitboards according to given color in string from W / B """
     color_to_board_dict = {"B":self.black_bitboards,"W":self.white_bitboards}
     return color_to_board_dict[color]
 
-def or_two_boards(bitboard_a, bitboard_b):
-    bitboard = np.uint64(np.uint64(bitboard_a) | np.uint64(bitboard_b))
-    return bitboard
-
-
-def legal_moves_of_piece(self,vision_bitboard,color:str):
-    if color == "W":
-        friendly_bitboard =  occupied_bitboard(self.white_bitboards)
-    else:
-        friendly_bitboard =  occupied_bitboard(self.black_bitboards)
-    intersection = np.uint64(vision_bitboard) & np.uint64(friendly_bitboard)
-    return intersection
     
-""" Empty vision bitboards of pieces """
-
 def knight_vision_bitboard(self,square_notation:str):
-        """ returns a vision board of a knight on a specific square"""
+        """ Returns a vision board of a knight on a specific square"""
         square_index = get_square_location_from_coordinates(square_notation)
         row, col = self.row_col_from_square_notation(square_notation)
         vision_board = np.uint64(0)
@@ -53,51 +38,20 @@ def knight_vision_bitboard(self,square_notation:str):
 
         return np.uint64(vision_board), "WN", square_index
 
-""" empty vision boards, might not need """
-
-def rook_vision_board_empty(self, square_notation):
-    vision_board = np.uint64(west_ray_empty(self, square_notation)[0] |
-                            east_ray_empty(self, square_notation)[0] |
-                            north_ray_empty(self, square_notation)[0] | 
-                            south_ray_empty(self, square_notation)[0])
-    return np.uint64(vision_board)
-
-def bishop_vision_board_empty(self,square_notation):
-    vision_board = np.uint64(north_west_ray_empty(self, square_notation)[0] |
-                            north_east_ray_empty(self, square_notation)[0] |
-                            south_west_ray_empty(self, square_notation)[0] | 
-                            south_east_ray_empty(self, square_notation)[0])
-    return np.uint64(vision_board)
-
-def queen_vision_board_empty(self, square_notation):
-    queen_vb_empty = np.uint64(rook_vision_board_empty(self,square_notation) | bishop_vision_board_empty(self,square_notation))
-    return np.uint64(queen_vb_empty)
-
-
-""" legal moves """
-
-def attack_squares(self,vision_board,color:str):
-    if color == "W":
-        friendly_bitboard =  occupied_bitboard(self.white_bitboards)
-    else:
-        friendly_bitboard =  occupied_bitboard(self.black_bitboards)
-    intersection = np.uint64(np.uint64(vision_board) & np.uint64(friendly_bitboard))
-
-    return intersection
-
 def lsb_forward(bitboard):
-    #returns as index
+    """ Returns least significant bit as index"""
     if bitboard == 0:
         return -1  
     return (int(bitboard) & - int(bitboard)).bit_length() - 1
 
 def msb_backward(bitboard):
+    """ Returns most significant bit as index"""
     if bitboard == 0:
         return -1
     return int(bitboard).bit_length() - 1
 
 def get_blocked_rays_bishop(self, square_notation):
-    """ returns vision bitboard of bishop with blocks accounted for """
+    """ Returns vision bitboard of bishop with blocks accounted for """
     blockers = np.uint64(0)
     intersection_board = occupied_bitboard(self.all_bitboards) #improve
 
@@ -145,8 +99,10 @@ def get_blocked_rays_bishop(self, square_notation):
     return vision_bitboard, np.uint64(blockers)
 
 def get_blocked_rays_rook(self, square_notation):
+    """ Returns rook vision board with blocks from a given square notation
+        and a bitboard of all blockers """
     blockers = np.uint64(0)
-    intersection_board = occupied_bitboard(self.all_bitboards) #improve
+    intersection_board = occupied_bitboard(self.all_bitboards) 
    
     """ Get north ray with blocks """
     north_ray = north_ray_empty(self,square_notation)[0]
@@ -196,8 +152,6 @@ def get_blocked_rays_rook(self, square_notation):
 
 def get_legal_moves_bishop(self,color:str, square_notation:str):
     """ returns normal moves and takes moves bitboards of a bishop from square"""
-    #currently returns all moves as one
-    # add checking for discovered king attacks
     vision_board_blocked, blockers = get_blocked_rays_bishop(self, square_notation)
     enemy_bitboard = get_enemy_pieces(self,color)
     enemy_bitboard = occupied_bitboard(enemy_bitboard)
@@ -208,7 +162,6 @@ def get_legal_moves_bishop(self,color:str, square_notation:str):
 
 def get_legal_moves_rook(self,color:str,square_notation:str): 
     """ returns normal moves and takes moves bitboards of a rook from square"""
-
     vision_board_blocked, blockers = get_blocked_rays_rook(self, square_notation)
     enemy_bitboard = get_enemy_pieces(self,color)
     enemy_bitboard = occupied_bitboard(enemy_bitboard)
@@ -218,12 +171,14 @@ def get_legal_moves_rook(self,color:str,square_notation:str):
     return full_vision_bitboard
 
 def get_legal_moves_queen(self,color:str,square_notation:str):
+    """ Returns all legal moves of a queen of a given color from a given square"""
     diagonal_vision_bitboard = get_legal_moves_bishop(self,color,square_notation)
     cardinal_vision_bitboard = get_legal_moves_rook(self,color,square_notation)
     return diagonal_vision_bitboard | cardinal_vision_bitboard
 
 
 def get_legal_moves_knight(self, color:str, square_notation:str):
+    """ Returns all legal moves of a knight of a given color from a given square """
     knight_vision_board = knight_vision_bitboard(self,square_notation)[0]
     friendly_bitboard = get_friendly_pieces(self,color)
     friendly_bitboard = occupied_bitboard(friendly_bitboard)
@@ -231,6 +186,7 @@ def get_legal_moves_knight(self, color:str, square_notation:str):
     return full_vision_bitboard
 
 def get_legal_moves_king(self,color:str,square_notation:str):
+    """ Returns all legal moves of a king of a given color from a given square """
     king_vision_board = king_vision_board_empty(self, square_notation)
     friendly_bitboard = get_friendly_pieces(self,color)
     friendly_bitboard = occupied_bitboard(friendly_bitboard)
@@ -251,6 +207,7 @@ def get_legal_white_pawn_moves(self,color:str,square_notation:str):
     return full_vision_bitboard
 
 def get_legal_black_pawn_moves(self,color:str,square_notation:str): 
+    """ Returns all legal moves of a black pawn from a given square """
     pawn_vision_board, two_move = black_pawn_vision_board_empty(self, square_notation)
     all_bitboards = occupied_bitboard(self.all_bitboards)
     enemy_bitboard = occupied_bitboard(get_enemy_pieces(self,color))

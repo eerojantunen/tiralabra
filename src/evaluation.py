@@ -18,12 +18,18 @@ def evaluate_piece_positions(self): #add all lists
 
 
 def material_count(self):
+    """ Returns the sum of all material on a given board
+        white material are positive numbers
+        black material are negative numbers """
     material_diff = 0
     for piece in self.piece_board: #tarkista self.piece_board
         material_diff += piece_value[piece] * len(self.piece_board[piece])
     return material_diff
 
 def evaluate(self):
+    """ Returns sum of all evaluation functions
+        Favourable positions for white are positive numbers
+        Favourable positions for black are negative numbers"""
     full_evaluation = 0
     full_evaluation += material_count(self)
     full_evaluation += evaluate_piece_positions(self)

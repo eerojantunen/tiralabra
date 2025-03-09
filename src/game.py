@@ -1,11 +1,13 @@
 from board import *
-
 class Game:
+    
     def __init__(self):
+        """ initalizes board and default parameters """
         self.main_board = Board()
         self.max_move_time = 20
 
-    def run_game(self): #add mate
+    def run_game(self): 
+        """ Runs a loop through which user can play against the chess engine"""
         self.main_board.final_print_board()
         while True:
             alku = time.time()
@@ -39,12 +41,14 @@ class Game:
             self.main_board.final_print_board()
 
     def new_game(self):
+        """ Initializes standard board and starts game loop"""
         self.main_board.setup_standard_board()
         self.run_game()
     
 
 
     def load_ready_position(self):
+        """ Initializes board with a given set of piece positions """
         self.main_board.add_material("BKg8")
         self.main_board.add_material("Bg7")
         self.main_board.add_material("Bh7")
@@ -76,26 +80,11 @@ class Game:
         self.main_board.add_material("WBf4")
         self.main_board.add_material("Wd4")
         self.main_board.add_material("We3")        
-        """
-        self.main_board.add_material("BKh8")
-        self.main_board.add_material("BQh6")
-        self.main_board.add_material("BRe6")
-        self.main_board.add_material("WKg1")
-        self.main_board.add_material("WQe4")
-        self.main_board.add_material("WRc2")
-
-        self.main_board.add_material("BNb5")
-        self.main_board.add_material("BNe7")
-        self.main_board.add_material("Bf5")
-        self.main_board.add_material("Bg7")
-        self.main_board.add_material("WBb1")
-        self.main_board.add_material("WNb7")
-        self.main_board.add_material("Wg2")
-        self.main_board.add_material("Wh3")
-        """
         self.run_game()
 
     def instructions(self):
+        """ Prints instructions """
+
         print("\nComputer plays white, you play black")
         print("The computer will make a move and will let you know what piece it moved from which square into what square")
         print("You will be prompted to input the inital square of the piece you want to move, the square it moves to and the piece type")
@@ -104,11 +93,15 @@ class Game:
         self.print_piece_names()
 
     def print_piece_names(self):
+        """ Prints piece names and their notation"""
+
         print("White pawn: W\nWhite knight: WN\nWhite bishop: WB\nWhite rook: WR")
         print("White queen: WQ\nWhite king: WK\nBlack pawn: B\nBlack knight: BN\nBlack bishop: BB")
         print("Black rook: BR\nBlack queen: BQ\nBlack king: BK")
 
     def change_parameters(self):
+        """ Allows user to choose which parameters to change"""
+
         while True:
             selection = int(input(f"\n1: Change amount of time computer has per move. Current: {self.max_move_time}s\n0: Return\nInput: "))
             if selection == 1:
@@ -122,7 +115,11 @@ class Game:
 
 
     def game_selection(self):
-        """ select game type (new, loaded position)"""
+        """ Allows user to select from
+            1: Set up standard board
+            2. Load position from memory
+            3. Instructions
+            4. Change engine parameters"""
         while True:
             selection = int(input("\n1. Setup standard board \n2. Load position from memory\n3. Instructions \n4. Change engine parameters \nInput: "))
             if selection == 1:

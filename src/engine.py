@@ -5,7 +5,17 @@ import time
 
 move_dict = {}
 
-def run_engine_local(current_board, legal_moves, depth, maxing, max_time_parameter ,move_history = []):
+def run_engine_local(current_board, legal_moves, maxing, max_time_parameter ,move_history = []):
+    """ Runs the minimax algorithm iteratively with alpha beta pruning and move ordering for a given board and legal moves
+        Parameters:
+            current_board: target Board object
+            legal_moves: list of all legal moves for computer (white)
+            maxing: boolean indicating is minimax algorithm started with maximizing or minimizing
+            max_time_parameter: int indicating amount of time to run engine
+            move_history: list of previous moves (optional)
+        Returns:
+            Tuple of (int evaluation, list move history)
+        """
     global initial_time
     global max_time
     max_time = max_time_parameter
@@ -27,9 +37,14 @@ def run_engine_local(current_board, legal_moves, depth, maxing, max_time_paramet
         else:
             break
         depth += 1
-    print("depth",depth-1)
     return best_move
 def order_moves(board_hash, legal_moves):
+    """ Orders moves if current board has appeared before and best move is in legal_moves 
+    Parameters:
+        board_hash: int of unique representation of board state
+        legal_moves: list of legal moves
+    returns:
+        legal_moves with found (best) move as first if found"""
     if board_hash in move_dict:
         best_move = move_dict.get(board_hash)
         ordered_moves = []
@@ -43,6 +58,18 @@ def order_moves(board_hash, legal_moves):
     return legal_moves
     
 def alphabetaminimax(current_board, legal_moves, depth, maxing, move_history = [], alpha=-9999999999, beta=9999999999): 
+    """ minimax algorithm with alpha-beta pruning and move ordering which tries moves to find best possible move sequence
+        according to evaluation function and assuming both players play optimally
+        Parameters:
+            current_board: target Board object
+            legal_moves: list of all legal moves for computer (white)
+            maxing: boolean indicating is minimax algorithm started with maximizing or minimizing
+            max_time_parameter: int indicating amount of time to run engine
+            move_history: list of previous moves
+            alpha: alpha value for alpha-beta pruning
+            beta: beta value for alpha-beta pruning
+        Returns:
+            Tuple of evaluation for a move sequence and move history of said sequence"""
     global initial_time
     global max_time
     if depth == 0 or legal_moves is None:

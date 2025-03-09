@@ -1,15 +1,15 @@
+""" unicode representation for each piece for printing board"""
 piece_representation = {"B":"\u2659", "BR":"\u2656", "BN":"\u2658", "BB":"\u2657",
                         "BQ":"\u2655", "BK":"\u2654", "W":"\u265F", "WR":"\u265C",
                         "WN":"\u265E", "WB":"\u265D", "WQ":"\u265B", "WK":"\u265A"}
 
-
+""" Material value of every piece for evaluation"""
 piece_value = {"W":100,"WN":300, "WB":315, "WR":500, "WQ":900, "WK":99999,
-               "B":-100,"BN":-300, "BB":-315, "BR":-500, "BQ":-900, "BK":-99999 } #king value is placeholder
+               "B":-100,"BN":-300, "BB":-315, "BR":-500, "BQ":-900, "BK":-99999 }
 
-#add promotion to queen
-#fix colors
 #weights from https://www.chessprogramming.org/Simplified_Evaluation_Function
 #weights are in "reverse/flipped" order since index 0 on weights is index
+""" Weigths for how a piece is valued depending on what square it is """
 white_pawn_weights = [  0,   0,   0,   0,   0,   0,   0,   0,
                         5,  10,  10, -20, -20,  10,  10,   5,
                         5,  -5, -10,   0,   0, -10,  -5,   5,
@@ -138,11 +138,8 @@ white_king_weights = [
     -30,-40,-40,-50,-50,-40,-40,-30
 ]
 
-
-
-
-
 def get_square_location_from_coordinates(notation:str):
+    """ Returns index from algeabric notation """
     letter = notation[0]
     number = int(notation[1])
     letter_dict = {"a":0, "b":1,"c":2, "d":3, "e":4, "f":5, "g":6, "h":7}

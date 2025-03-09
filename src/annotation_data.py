@@ -1,3 +1,4 @@
+""" Dictionary that allows converting algebraic notation to index"""
 alg_notation_to_index = {
     "a8": 56, "b8": 57, "c8": 58, "d8": 59, "e8": 60, "f8": 61, "g8": 62, "h8": 63,
     "a7": 48, "b7": 49, "c7": 50, "d7": 51, "e7": 52, "f7": 53, "g7": 54, "h7": 55,
@@ -9,6 +10,7 @@ alg_notation_to_index = {
     "a1": 0,  "b1": 1,  "c1": 2,  "d1": 3,  "e1": 4,  "f1": 5,  "g1": 6,  "h1": 7,
 }
 
+""" Dictionary that allows converting index to algebraic notation"""
 index_to_alg_notation = {
     56: "a8", 57: "b8", 58: "c8", 59: "d8", 60: "e8", 61: "f8", 62: "g8", 63: "h8",
     48: "a7", 49: "b7", 50: "c7", 51: "d7", 52: "e7", 53: "f7", 54: "g7", 55: "h7",
@@ -19,5 +21,3 @@ index_to_alg_notation = {
     8: "a2", 9: "b2", 10: "c2", 11: "d2", 12: "e2", 13: "f2", 14: "g2", 15: "h2",
     0: "a1", 1: "b1", 2: "c1", 3: "d1", 4: "e1", 5: "f1", 6: "g1", 7: "h1",
 }
-
-# Can / should be expanded to include index -> row col
