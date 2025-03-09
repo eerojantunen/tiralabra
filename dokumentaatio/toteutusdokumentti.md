@@ -10,11 +10,13 @@ evaluation.py - Pitää sisällään pelitilanteen arvioimiseen tarvittavat funk
 annotation_data.py ja piece_data.py sisältävät tietoa pelinappuloista ja laudan sijainneista
 
 -
-Tila- ja aikavaativuudet
+Tila- ja aikavaativuudet:
+
 Minimax ilman alphabeta karsintaa olisi O(b^d) ja alphabetakarsinnan avulla se on O(b^d) ja O(√(b^d)) välillä. Tehokkuus paranee, mitä suuremmalla syvyydellä (eli suuremmalla ajalla) algoritmia suoritetaan, sillä iteratiivisen läpikäynnin ja siirtojen järjestämisen avulla, karsituiden puiden määrä kasvaa jolloin päästään lähemmäksi O(√(b^d)) missä b = laillisten siirtojen määrä kustakin tilanteesta ja d = hakusyvyys. Minimax ilman alphabeta karsintaa olisi O(b^d). Laillisten siirtojen generointi on O(n), missä n on laillisten siirotjen määrä.
 
 -
 Puutteet ja parannusehdotukset:
+
 1. numpy.uint64 muuntaminen pythonin int tyyppiin. Tämä on mahdollista toteuttaa, ja siitä on jo "osittain" toimiva versio haarassa "intproject", mutta sen toteuttamisessa ilmeni vielä bugeja, joita en kerennyt korjata demoon mennessä, joten jatkoin uint64 käyttämistä.
 2. Shakkeihin liittyvät laittomat siirrot. Tällä hetkellä moves.py funktio all_moves tuottaa laittomia siirtoja, missä kuningas jätetään shakkiin. Engine.py valitsee tämänlaisen siirron jos se näkee olevansa kuitenkin matitettu. Tämä kuitenkin tuottaa välillä huonoja siirtoja, sillä jos syvyydellä 4 ei nähdä että oma kuningas voidaan syödä syvyydellä 5, saatetaan tämä siirto tehdä, joka voi usein johtaa huonoon tilanteeseen.
 3. Siirtojen generointi on hidasta. Tätä voisi tehostaa käyttämällä "magic bitboard" bittilautoja.
