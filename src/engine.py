@@ -5,7 +5,7 @@ import time
 
 move_dict = {}
 
-def run_engine_local(current_board, legal_moves, maxing, max_time_parameter ,move_history = []):
+def run_engine_local(current_board, legal_moves, maxing, max_time_parameter ,move_history = [], test_depth=0):
     """ Runs the minimax algorithm iteratively with alpha beta pruning and move ordering for a given board and legal moves
         Parameters:
             current_board: target Board object
@@ -18,6 +18,10 @@ def run_engine_local(current_board, legal_moves, maxing, max_time_parameter ,mov
         """
     global initial_time
     global max_time
+    global prunes # Used to count amount of prunes when running engine. Used for testing.
+    global move_order_hits # Used to count amount of hash collisions when running engine. Used for testing.
+    move_order_hits = 0
+    prunes = 0 
     max_time = max_time_parameter
     initial_time = time.time()
     best_move = None
@@ -26,6 +30,8 @@ def run_engine_local(current_board, legal_moves, maxing, max_time_parameter ,mov
     beta=9999999999
     while True:
         time_left = max_time - (time.time()-initial_time)
+        if test_depth != 0 and depth > test_depth:
+            break
         if time_left <= 0:
             break
         current_hash = current_board.get_board_state_hash()
@@ -37,6 +43,8 @@ def run_engine_local(current_board, legal_moves, maxing, max_time_parameter ,mov
         else:
             break
         depth += 1
+    if test_depth != 0: #Used for testing
+        return best_move, prunes, move_order_hits 
     return best_move
 def order_moves(board_hash, legal_moves):
     """ Orders moves if current board has appeared before and best move is in legal_moves 
@@ -45,12 +53,14 @@ def order_moves(board_hash, legal_moves):
         legal_moves: list of legal moves
     returns:
         legal_moves with found (best) move as first if found"""
+    global move_order_hits
     if board_hash in move_dict:
         best_move = move_dict.get(board_hash)
         ordered_moves = []
         for move in legal_moves:
             if move == best_move:
                 ordered_moves.append(move)
+                move_order_hits += 1
         for move in legal_moves:
             if move != best_move:
                 ordered_moves.append(move)
@@ -72,6 +82,7 @@ def alphabetaminimax(current_board, legal_moves, depth, maxing, move_history = [
             Tuple of evaluation for a move sequence and move history of said sequence"""
     global initial_time
     global max_time
+    global prunes
     if depth == 0 or legal_moves is None:
         return (evaluate(current_board), move_history)
 
@@ -95,6 +106,7 @@ def alphabetaminimax(current_board, legal_moves, depth, maxing, move_history = [
                     move_dict[current_hash] = move
                 alpha = max(alpha, max_score[0])
                 if beta <= alpha:
+                    prunes += 1
                     break
         return max_score
 
@@ -117,5 +129,6 @@ def alphabetaminimax(current_board, legal_moves, depth, maxing, move_history = [
 
                 beta = min(beta, min_score[0])
                 if beta <= alpha:
+                    prunes += 1
                     break
         return min_score

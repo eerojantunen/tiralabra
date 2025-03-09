@@ -152,13 +152,15 @@ class Board():
         return row, col
 
 
-    def run_engine(self,max_time_parameter):
+    def run_engine(self,max_time_parameter, test_depth=0):
         """ Runs minimax engine to find white (computer) move
             Parameters: 
                 max_time_parameter: maximum time engine is allowed to run
             Returns:
                 Tuple of (int evaluation, list move history)"""
         legal_moves = all_moves(self,"W")
+        if test_depth != 0:
+            return run_engine_local(self,legal_moves,True,max_time_parameter=max_time_parameter,test_depth=test_depth)
         move_data = run_engine_local(self,legal_moves,True,max_time_parameter=max_time_parameter)
         return move_data
 
@@ -200,3 +202,23 @@ class Board():
         for i in self.all_bitboards:
             hash_key ^= i
         return hash_key
+        
+    def print_square_vision_board(self, vision_board, piece:str, square_index:int, color="x"):
+        """ print a given vision board ---- debugging tool
+         🟥-enemy,   🟩-friendly 🟪-self"""
+        board = ["⚪"]*64
+        x = self.index_from_bitboard(vision_board)
+        if color != "x":
+            y = self.index_from_bitboard(occupied_bitboard(get_enemy_pieces(self, color))) #:)
+            for i in y:
+                board[i] = "🟥"
+        board[square_index] = "🟪"#piece_representation[piece] optional
+        for i in x:
+            board[i] = "❌"
+        if color != "x":
+            y = self.index_from_bitboard(occupied_bitboard(get_friendly_pieces(self, color))) #:)
+            for i in y:
+                board[i] = "🟩"
+        board = np.reshape(board,(8,8))
+        board = board[::-1,:]   
+        print(board, "\n")
